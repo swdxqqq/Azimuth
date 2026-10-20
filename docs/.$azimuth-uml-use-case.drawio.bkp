@@ -1,0 +1,335 @@
+<mxfile host="Electron" modified="2026-10-20T00:00:00Z" version="26.0.0">
+  <diagram id="page-1" name="Сценарии пользователя">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1"
+                  tooltips="1" connect="1" arrows="1" fold="1"
+                  page="1" pageScale="1" pageWidth="1169" pageHeight="827"
+                  math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title-1" value="UML Диаграма вариантов использования — Azimuth"
+                 style="text;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1;align=center;whiteSpace=wrap;html=1;"
+                 vertex="1" parent="1">
+          <mxGeometry x="0" y="20" width="1169" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- System boundary: Azimuth -->
+        <mxCell id="system-1" value="Azimuth"
+                 style="swimlane;startSize=30;whiteSpace=wrap;html=1;fillColor=#e6f3ff;strokeColor=#3b6ea5;fontStyle=1;fontSize=14;"
+                 vertex="1" parent="1">
+          <mxGeometry x="60" y="60" width="1049" height="660" as="geometry" />
+        </mxCell>
+
+        <!-- Actors (outside system) -->
+        <mxCell id="actor-user" value="Пользователь"
+                 style="shape=mxgraph.uml.actor;whiteSpace=wrap;html=1;"
+                 vertex="1" parent="1">
+          <mxGeometry x="120" y="420" width="60" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="actor-server" value="Сервер Azimuth (REST API)"
+                 style="shape=mxgraph.uml.actor;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#3b6ea5;"
+                 vertex="1" parent="1">
+          <mxGeometry x="1000" y="380" width="120" height="160" as="geometry" />
+        </mxCell>
+
+        <mxCell id="actor-external" value="Внешние API и источники данных"
+                 style="shape=mxgraph.uml.actor;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#9673a6;"
+                 vertex="1" parent="1">
+          <mxGeometry x="1000" y="640" width="160" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- User use cases -->
+        <mxCell id="uc-catalog" value="Просмотреть каталог стран"
+                 style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;"
+                 vertex="1" parent="system-1">
+          <mxGeometry x="240" y="120" width="180" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-search" value="Найти страну"
+                 style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;"
+                 vertex="1" parent="system-1">
+          <mxGeometry x="240" y="210" width="180" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-country-detail" value="Просмотреть подробную информацию о стране"
+                 style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;"
+                 vertex="1" parent="system-1">
+          <mxGeometry x="240" y="300" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-history" value="Просмотреть историческую динамику показателей"
+                 style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;"
+                 vertex="1" parent="system-1">
+          <mxGeometry x="240" y="390" width="240" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-compare" value="Сравнить несколько стран"
+                 style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;"
+                 vertex="1" parent="system-1">
+          <mxGeometry x="240" y="480" width="190" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-priorities" value="Настроить приоритеты критериев"
+                 style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;"
+                 vertex="1" parent="system-1">
+          <mxGeometry x="240" y="570" width="200" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-recommendations" value="Получить персонализированные рекомендации"
+                 style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;"
+                 vertex="1" parent="system-1">
+          <mxGeometry x="520" y="120" width="240" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-rating-explanation" value="Просмотреть объяснение рейтинга"
+                 style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;"
+                 vertex="1" parent="system-1">
+          <mxGeometry x="520" y="210" width="200" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-favorite-add" value="Добавить страну в избранное"
+                 style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;"
+                 vertex="1" parent="system-1">
+          <mxGeometry x="520" y="300" width="200" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-favorite-list" value="Просмотреть и изменить список избранного"
+                 style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;"
+                 vertex="1" parent="system-1">
+          <mxGeometry x="520" y="390" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-location-permission" value="Предоставить или отклонить разрешение на геолокацию"
+                 style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;"
+                 vertex="1" parent="system-1">
+          <mxGeometry x="520" y="480" width="250" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-additional-info" value="Просмотреть дополнительные сведения, если они доступны"
+                 style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;"
+                 vertex="1" parent="system-1">
+          <mxGeometry x="520" y="570" width="260" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Server use cases -->
+        <mxCell id="uc-server-list" value="Предоставить список стран и их показатели"
+                 style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;"
+                 vertex="1" parent="1">
+          <mxGeometry x="1200" y="200" width="260" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-server-detail" value="Получить подробные сведения и исторические данные"
+                 style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;"
+                 vertex="1" parent="1">
+          <mxGeometry x="1200" y="290" width="280" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-server-rating" value="Рассчитать рейтинг рекомендаций"
+                 style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;"
+                 vertex="1" parent="1">
+          <mxGeometry x="1200" y="380" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-server-favorite" value="Сохранить или получить данные избранного"
+                 style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;"
+                 vertex="1" parent="1">
+          <mxGeometry x="1200" y="470" width="240" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-server-external" value="Получить и обработать данные внешних источников"
+                 style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;"
+                 vertex="1" parent="1">
+          <mxGeometry x="1200" y="560" width="280" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- External sources use cases -->
+        <mxCell id="uc-numbeo" value="Numbeo — стоимость и качество жизни"
+                 style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;"
+                 vertex="1" parent="1">
+          <mxGeometry x="1260" y="720" width="240" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-worldbank" value="World Bank API — экономические показатели"
+                 style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;"
+                 vertex="1" parent="1">
+          <mxGeometry x="1260" y="810" width="260" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-restcountries" value="REST Countries — справочная информация"
+                 style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;"
+                 vertex="1" parent="1">
+          <mxGeometry x="1260" y="900" width="260" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-weather" value="Погодный API — погодные данные (при интеграции)"
+                 style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;"
+                 vertex="1" parent="1">
+          <mxGeometry x="1260" y="990" width="260" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Associations: User <-> UC -->
+        <mxCell id="e-uc-catalog" value=""
+                 style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=0;"
+                 edge="1" source="actor-user" target="uc-catalog" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-uc-search" value=""
+                 style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=0;"
+                 edge="1" source="actor-user" target="uc-search" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-uc-country-detail" value=""
+                 style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=0;"
+                 edge="1" source="actor-user" target="uc-country-detail" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-uc-history" value=""
+                 style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=0;"
+                 edge="1" source="actor-user" target="uc-history" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-uc-compare" value=""
+                 style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=0;"
+                 edge="1" source="actor-user" target="uc-compare" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-uc-priorities" value=""
+                 style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=0;"
+                 edge="1" source="actor-user" target="uc-priorities" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-uc-recommendations" value=""
+                 style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=0;"
+                 edge="1" source="actor-user" target="uc-recommendations" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-uc-rating-explanation" value=""
+                 style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=0;"
+                 edge="1" source="actor-user" target="uc-rating-explanation" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-uc-favorite-add" value=""
+                 style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=0;"
+                 edge="1" source="actor-user" target="uc-favorite-add" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-uc-favorite-list" value=""
+                 style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=0;"
+                 edge="1" source="actor-user" target="uc-favorite-list" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-uc-location-permission" value=""
+                 style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=0;"
+                 edge="1" source="actor-user" target="uc-location-permission" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-uc-additional-info" value=""
+                 style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=0;"
+                 edge="1" source="actor-user" target="uc-additional-info" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Extend: geolocation is optional -->
+        <mxCell id="e-ext-location" value="&lt;&lt;extend&gt;&gt;"
+                 style="edgeStyle=orthogonalEdgeStyle;dashed=1;html=1;endArrow=open;endFill=0;strokeColor=#999999;strokeWidth=1;"
+                 edge="1" source="uc-location-permission" target="uc-recommendations" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="740" y="490" as="sourcePoint" />
+            <mxPoint x="740" y="140" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Extend: additional info optional -->
+        <mxCell id="e-ext-additional" value="&lt;&lt;extend&gt;&gt;"
+                 style="edgeStyle=orthogonalEdgeStyle;dashed=1;html=1;endArrow=open;endFill=0;strokeColor=#999999;strokeWidth=1;"
+                 edge="1" source="uc-additional-info" target="uc-country-detail" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="780" y="580" as="sourcePoint" />
+            <mxPoint x="780" y="320" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Include: search included in country detail -->
+        <mxCell id="e-inc-search" value="&lt;&lt;include&gt;&gt;"
+                 style="edgeStyle=orthogonalEdgeStyle;dashed=1;html=1;endArrow=open;endFill=0;strokeColor=#666666;strokeWidth=1;"
+                 edge="1" source="uc-country-detail" target="uc-search" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="460" y="300" as="sourcePoint" />
+            <mxPoint x="460" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Associations: Server <-> UC -->
+        <mxCell id="e-server-list" value=""
+                 style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=0;"
+                 edge="1" source="actor-server" target="uc-server-list" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-server-detail" value=""
+                 style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=0;"
+                 edge="1" source="actor-server" target="uc-server-detail" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-server-rating" value=""
+                 style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=0;"
+                 edge="1" source="actor-server" target="uc-server-rating" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-server-favorite" value=""
+                 style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=0;"
+                 edge="1" source="actor-server" target="uc-server-favorite" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-server-external" value=""
+                 style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=0;"
+                 edge="1" source="actor-server" target="uc-server-external" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Associations: External sources <-> UC -->
+        <mxCell id="e-numbeo" value=""
+                 style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=0;"
+                 edge="1" source="actor-external" target="uc-numbeo" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-worldbank" value=""
+                 style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=0;"
+                 edge="1" source="actor-external" target="uc-worldbank" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-restcountries" value=""
+                 style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=0;"
+                 edge="1" source="actor-external" target="uc-restcountries" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-weather" value=""
+                 style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=0;"
+                 edge="1" source="actor-external" target="uc-weather" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
