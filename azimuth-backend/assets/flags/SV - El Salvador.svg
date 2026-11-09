@@ -1,0 +1,29 @@
+<svg width="32" height="24" viewBox="0 0 32 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_270_67553)">
+<rect width="32" height="24" rx="8" fill="white"/>
+<path d="M0 0V24H32V0H0Z" fill-rule="evenodd" clip-rule="evenodd" fill="#F7FCFF"/>
+<mask id="mask0_270_67553" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="32" height="24">
+<path d="M0 0V24H32V0H0Z" fill-rule="evenodd" clip-rule="evenodd" fill="white"/>
+</mask>
+<g mask="url(#mask0_270_67553)">
+<path d="M0 0V8H32V0H0Z" fill-rule="evenodd" clip-rule="evenodd" fill="#3D58DB"/>
+<path d="M0 16V24H32V16H0Z" fill-rule="evenodd" clip-rule="evenodd" fill="#3D58DB"/>
+<mask id="stroke0_270_67553" fill="white">
+<path d="M15.7836 16C18.0711 16 19.9254 14.1456 19.9254 11.8582C19.9254 9.57071 18.0711 7.71637 15.7836 7.71637C13.4962 7.71637 11.6418 9.57071 11.6418 11.8582C11.6418 14.1456 13.4962 16 15.7836 16Z" fill-rule="evenodd" clip-rule="evenodd"/>
+</mask>
+<path d="M15.7836 16C18.0711 16 19.9254 14.1456 19.9254 11.8582C19.9254 9.57071 18.0711 7.71637 15.7836 7.71637C13.4962 7.71637 11.6418 9.57071 11.6418 11.8582C11.6418 14.1456 13.4962 16 15.7836 16Z" stroke-width="2" stroke="#E8AA00" mask="url(#stroke0_270_67553)"/>
+<path d="M13.8107 9.66223C13.8107 9.66223 12.8582 11.2299 12.8582 12.3061C12.8582 13.3823 13.9983 14.735 15.7922 14.735C17.542 14.735 18.7997 13.6898 18.8377 12.3061C18.8758 10.9224 17.8964 9.93741 17.8964 9.93741C17.8964 9.93741 18.4507 11.9295 18.1736 12.7367C17.8964 13.544 16.9994 14.5206 15.7922 14.3963C14.585 14.272 13.4394 12.7861 13.4394 12.3061C13.4394 11.8261 13.8107 9.66223 13.8107 9.66223Z" fill-rule="evenodd" clip-rule="evenodd" fill="#1E601B"/>
+<path d="M14.1605 12.3283H17.3678" stroke="#188396"/>
+<path d="M14.459 11.8059H17.2185" stroke="#E8AA00"/>
+<mask id="stroke1_270_67553" fill="white">
+<path d="M15.8366 9.3797L13.7083 12.9112H17.9265L15.8366 9.3797Z" fill-rule="evenodd" clip-rule="evenodd"/>
+</mask>
+<path d="M15.8366 9.3797L13.7083 12.9112H17.9265L15.8366 9.3797Z" stroke-width="2" stroke="#E8AA00" mask="url(#stroke1_270_67553)"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_270_67553">
+<rect width="32" height="24" rx="8" fill="white"/>
+</clipPath>
+</defs>
+</svg>

@@ -1,0 +1,17 @@
+<svg width="32" height="24" viewBox="0 0 32 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<rect width="32" height="24" rx="8" fill="white"/>
+<use xlink:href="#stroke0_270_67449" fill="#A0A0A0"/>
+<mask id="stroke1_270_67449" fill="white">
+<use xlink:href="#stroke0_270_67449"/>
+</mask>
+<path d="M6 4H10V6.97967C10.4721 7.05971 10.8317 7.47065 10.8317 7.96556C10.8317 7.97709 10.8315 7.98857 10.8311 8H14V12H10.7326C10.5943 12.2863 10.3236 12.4966 10 12.5514V16H6V12.5386C5.70459 12.4685 5.45991 12.2674 5.33074 12H2V8H5.23226C5.23188 7.98857 5.23168 7.97709 5.23168 7.96556C5.23168 7.49303 5.55943 7.09705 6 6.99254V4Z" stroke-width="2" stroke="#FECA00" mask="url(#stroke1_270_67449)"/>
+<path d="M16 0H32V24H16V0Z" fill-rule="evenodd" clip-rule="evenodd" fill="#E31D1C"/>
+<mask id="mask0_270_67449" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="16" y="0" width="16" height="24">
+<path d="M16 0H32V24H16V0Z" fill-rule="evenodd" clip-rule="evenodd" fill="white"/>
+</mask>
+<g mask="url(#mask0_270_67449)">
+</g>
+<defs>
+<path id="stroke0_270_67449" d="M10 4H6V6.99254C5.55943 7.09705 5.23168 7.49303 5.23168 7.96556C5.23168 7.97709 5.23188 7.98857 5.23226 8H2V12H5.33074C5.45991 12.2674 5.70459 12.4685 6 12.5386V16H10V12.5514C10.3236 12.4966 10.5943 12.2863 10.7326 12H14V8H10.8311C10.8315 7.98857 10.8317 7.97709 10.8317 7.96556C10.8317 7.47065 10.4721 7.05971 10 6.97967V4Z" fill-rule="evenodd" clip-rule="evenodd"/>
+</defs>
+</svg>

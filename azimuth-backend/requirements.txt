@@ -1,0 +1,33 @@
+# Web framework
+fastapi
+uvicorn[standard]
+
+# Database
+sqlalchemy
+psycopg2-binary
+psycopg[binary]
+alembic
+python-dotenv
+
+# Data validation
+pydantic
+pydantic-settings
+
+# Authentication
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
+email-validator
+
+# Data processing
+numpy
+pandas
+scikit-learn
+matplotlib
+seaborn
+scipy
+
+# API clients
+requests
+lxml
+html5lib

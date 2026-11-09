@@ -1,0 +1,193 @@
+"country","languages","has_official_language"
+"Zimbabwe","Chewa; Chibarwe; English; Kalanga; Khoisan; Nambya; Ndau; Ndebele; Shangani; Shona; Zimbabwean Sign Language; Sotho; Tonga; Tswana; Venda; Xhosa",true
+"South Africa","English; Afrikaans; Venda; Zulu; Xhosa; Southern Ndebele; Swati; Northern Sotho; Sesotho; Tswana; Tsonga; South African Sign Language",true
+"United Kingdom","English; Irish; Welsh; Scottish Gaelic; Scots; Cornish",true
+"Ethiopia","Afar; Amharic; Oromo; Somali; Tigrinya",true
+"Switzerland","German; Italian; French; Romansh",true
+"Singapore","English; Chinese; Malay; Tamil",true
+"Bolivia","Spanish; Quechua; Aymara; Guarani",true
+"Nigeria","English; Hausa; Yoruba; Igbo",true
+"Papua New Guinea","English; Tok Pisin; Hiri Motu; Papua New Guinean Sign Language",true
+"Rwanda","Kinyarwanda; English; French; Swahili",true
+"New Zealand","English; Maori; New Zealand Sign Language",true
+"Belgium","Dutch; French; German",true
+"Luxembourg","Luxembourgish; French; German",true
+"Bosnia And Herzegovina","Bosnian; Serbian; Croatian",true
+"Peru","Spanish; Quechua; Aymara",true
+"Vanuatu","English; French; Bislama",true
+"Fiji","English; Fijian; Fiji Hindi",true
+"Comoros","Comorian; Arabic; French",true
+"Equatorial Guinea","Spanish; Portuguese; French",true
+"Seychelles","French; Seychellois Creole; English",true
+"Republic of the Congo","French; Kituba; Lingala",true
+"Palau","English; Palauan; Japanese",true
+"Finland","Finnish; Swedish",true
+"Cyprus","Greek; Turkish",true
+"Belarus","Belarusian; Russian",true
+"Kazakhstan","Kazakh; Russian",true
+"Kyrgyzstan","Kyrgyz; Russian",true
+"Tajikistan","Tajik; Russian",true
+"Canada","English; French",true
+"Ireland","Irish; English",true
+"Uganda","English; Swahili",true
+"Cameroon","English; French",true
+"Vatican City","Latin; Italian",true
+"Botswana","English; Tswana",true
+"Timor-Leste","Tetum; Portuguese",true
+"India","Hindi; English",true
+"Algeria","Arabic; Tamazight",true
+"Morocco","Arabic; Amazigh",true
+"Iraq","Arabic; Kurdish",true
+"Sudan","Arabic; English",true
+"Somalia","Somali; Arabic",true
+"Lesotho","Sesotho; English",true
+"Macao","Chinese; Portuguese",true
+"Burundi","French; Kirundi",true
+"Djibouti","Arabic; French",true
+"Chad","French; Arabic",true
+"Madagascar","Malagasy; French",true
+"Haiti","French; Haitian Creole",true
+"Central African Republic","French; Sango",true
+"Malta","Maltese; English",true
+"Pakistan","Urdu; English",true
+"Puerto Rico","Spanish; English",true
+"Paraguay","Spanish; Guarani",true
+"Philippines","English; Filipino",true
+"Kenya","English; Swahili",true
+"Jamaica","English; Jamaican Patois",true
+"Malawi","English; Chichewa",true
+"Samoa","Samoan; English",true
+"American Samoa","English; Samoan",true
+"Tanzania","Swahili; English",true
+"Kiribati","Gilbertese; English",true
+"Tuvalu","Tuvaluan; English",true
+"Sri Lanka","Sinhala; Tamil",true
+"Eswatini","English; Swati",true
+"Norway","Norwegian; Sami",true
+"North Macedonia","Macedonian; Albanian",true
+"Afghanistan","Dari; Pashto",true
+"Kosovo","Albanian; Serbian",true
+"Tonga","Tongan; English",true
+"South Korea","Korean; Korean Sign Language",true
+"Hong Kong (China)","Chinese; English",true
+"Ghana","English",true
+"Zambia","English",true
+"Guyana","English",true
+"Bermuda","English",true
+"Belize","English",true
+"Liberia","English",true
+"Trinidad and Tobago","English",true
+"Saint Lucia","English",true
+"The Gambia","English",true
+"Namibia","English",true
+"The Bahamas","English",true
+"Sierra Leone","English",true
+"Solomon Islands","English",true
+"Barbados","English",true
+"Antigua and Barbuda","English",true
+"Saint Kitts and Nevis","English",true
+"Turks and Caicos Islands","English",true
+"Dominica","English",true
+"Bangladesh","Bengali",true
+"Montenegro","Montenegrin",true
+"Nauru","Nauruan",true
+"Israel","Hebrew",true
+"Ukraine","Ukrainian",true
+"Moldova","Romanian",true
+"Czech Republic","Czech",true
+"China","Chinese",true
+"Germany","German",true
+"Austria","German",true
+"France","French",true
+"Cote d'Ivoire","French",true
+"Guinea","French",true
+"Benin","French",true
+"Gabon","French",true
+"Burkina Faso","French",true
+"Niger","French",true
+"Togo","French",true
+"Senegal","French",true
+"Mali","French",true
+"Monaco","French",true
+"Democratic Republic of the Congo","French",true
+"Italy","Italian",true
+"San Marino","Italian",true
+"Russia","Russian",true
+"Portugal","Portuguese",true
+"Angola","Portuguese",true
+"Brazil","Portuguese",true
+"Mozambique","Portuguese",true
+"Cabo Verde","Portuguese",true
+"Guinea-Bissau","Portuguese",true
+"Spain","Spanish",true
+"Colombia","Spanish",true
+"Chile","Spanish",true
+"Cuba","Spanish",true
+"Ecuador","Spanish",true
+"Dominican Republic","Spanish",true
+"Uruguay","Spanish",true
+"Guatemala","Spanish",true
+"Costa Rica","Spanish",true
+"El Salvador","Spanish",true
+"Panama","Spanish",true
+"Nicaragua","Spanish",true
+"Honduras","Spanish",true
+"Indonesia","Indonesian",true
+"Netherlands","Dutch",true
+"Suriname","Dutch",true
+"Turkey","Turkish",true
+"Poland","Polish",true
+"Sweden","Swedish",true
+"Thailand","Thai",true
+"Saudi Arabia","Arabic",true
+"United Arab Emirates","Arabic",true
+"Egypt","Arabic",true
+"Qatar","Arabic",true
+"Kuwait","Arabic",true
+"Oman","Arabic",true
+"Mauritania","Arabic",true
+"Jordan","Arabic",true
+"Tunisia","Arabic",true
+"Bahrain","Arabic",true
+"Lebanon","Arabic",true
+"Libya","Arabic",true
+"Denmark","Danish",true
+"Malaysia","Malay",true
+"Brunei","Malay",true
+"Vietnam","Vietnamese",true
+"Romania","Romanian",true
+"Iran","Persian",true
+"Greece","Greek",true
+"Hungary","Hungarian",true
+"Slovakia","Slovak",true
+"Myanmar","Burmese",true
+"Bulgaria","Bulgarian",true
+"Uzbekistan","Uzbek",true
+"Croatia","Croatian",true
+"Lithuania","Lithuanian",true
+"Serbia","Serbian",true
+"Slovenia","Slovenian",true
+"Turkmenistan","Turkmen",true
+"Azerbaijan","Azerbaijani",true
+"Nepal","Nepali",true
+"Latvia","Latvian",true
+"Estonia","Estonian",true
+"Cambodia","Khmer",true
+"Iceland","Icelandic",true
+"Laos","Lao",true
+"Georgia","Georgian",true
+"Albania","Albanian",true
+"Mongolia","Mongolian",true
+"Armenia","Armenian",true
+"Maldives","Dhivehi",true
+"Andorra","Catalan",true
+"Bhutan","Dzongkha",true
+"Argentina","Spanish",false
+"Mexico","Spanish; Akateko; Amuzgo; Awakateko; Ayapaneco; Cora; Cucapa; Cuicatec; Chatino; Chichimec-Jonaz; Chinantec; Chocholtec; Chontal of Oaxaca; Chontal of Tabasco; Chuj; Ch'ol; Guarijio; Huastec; Huave; Huichol; Ixcatec; Ixil; Jakaltek; Kaqchikel; Kickapoo; Kiliwa; Kumiai; Ku'ahl; K'iche'; Lacandon; Mam; Matlatzinca; Maya; Mayo; Mazahua; Mazatec; Mixe; Mixtec; Nahuatl; Olutec; Otomi; Paipai; Pame; Papago; Pima; Popoloca; Sierra Popoluca; Qato'k; Q'anjob'al; Q'eqchi'; Sayultec; Seri; Tarahumara; Tarascan; Teko; Tepehua; Northern Tepehuano; Southern Tepehuano; Texistepec; Tlahuica; Tlapanec; Tojolabal; Totonac; Triqui; Tseltal; Tsotsil; Yaqui; Zapotec; Zoque",false
+"Japan","Japanese",false
+"Australia","English",false
+"Mauritius","English; French",false
+"Eritrea","Tigrinya; Arabic; English",false
+"United States","English",true
+"Taiwan","Mandarin",true
+"Venezuela","Spanish",true
