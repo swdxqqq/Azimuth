@@ -1,0 +1,68 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, feature ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache: 'pip'
+
+    - name: Install dependencies
+      run: |
+        cd azimuth-backend
+        pip install -r requirements.txt
+
+    - name: Run tests with pytest
+      env:
+        DATABASE_URL: postgresql://test:test@localhost/test
+        JWT_SECRET_KEY: test-secret-key
+        JWT_ALGORITHM: HS256
+        ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      run: |
+        cd azimuth-backend
+        python -m pytest tests/ -v --tb=short
+
+    - name: Test summary
+      if: always()
+      run: echo "Tests completed"
+
+  deploy:
+    name: Deploy to Fly.io
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Flyctl
+      uses: superfly/flyctl-actions/setup-flyctl@master
+
+    - name: Deploy to Fly.io
+      env:
+        FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+      run: |
+        cd azimuth-backend
+        flyctl deploy --remote-only
+
+    - name: Deployment summary
+      if: success()
+      run: echo "Deployment to Fly.io completed successfully"
