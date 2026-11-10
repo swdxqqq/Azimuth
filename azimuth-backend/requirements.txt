@@ -27,6 +27,11 @@ matplotlib
 seaborn
 scipy
 
+# Testing
+pytest
+pytest-cov
+httpx
+
 # API clients
 requests
 lxml
