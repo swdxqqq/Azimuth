@@ -33,7 +33,6 @@ jobs:
         JWT_SECRET_KEY: test-secret-key
         JWT_ALGORITHM: HS256
         ACCESS_TOKEN_EXPIRE_MINUTES: 30
-        PYTHONPATH: ${{ github.workspace }}/azimuth-backend
       run: |
         python -m pytest azimuth-backend/tests/ -v --tb=short
 
