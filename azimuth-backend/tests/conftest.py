@@ -1,6 +1,12 @@
+import os
 import pytest
 from unittest.mock import patch, MagicMock
 from datetime import timedelta
+
+os.environ.setdefault("DATABASE_URL", "postgresql://test:test@localhost/test")
+os.environ.setdefault("JWT_SECRET_KEY", "test-secret-key-for-testing-only")
+os.environ.setdefault("JWT_ALGORITHM", "HS256")
+os.environ.setdefault("ACCESS_TOKEN_EXPIRE_MINUTES", "30")
 
 
 @pytest.fixture
