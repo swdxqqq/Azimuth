@@ -25,9 +25,7 @@ jobs:
         cache: 'pip'
 
     - name: Install dependencies
-      run: |
-        cd azimuth-backend
-        pip install -r requirements.txt
+      run: pip install -r azimuth-backend/requirements.txt
 
     - name: Run tests with pytest
       env:
@@ -35,9 +33,9 @@ jobs:
         JWT_SECRET_KEY: test-secret-key
         JWT_ALGORITHM: HS256
         ACCESS_TOKEN_EXPIRE_MINUTES: 30
+        PYTHONPATH: ${{ github.workspace }}/azimuth-backend
       run: |
-        cd azimuth-backend
-        python -m pytest tests/ -v --tb=short
+        python -m pytest azimuth-backend/tests/ -v --tb=short
 
     - name: Test summary
       if: always()
