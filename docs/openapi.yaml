@@ -38,6 +38,12 @@ tags:
     description: Регистрация и аутентификация
   - name: User
     description: Пользовательские данные (защищённые)
+  - name: Currency
+    description: Курсы валют (Frankfurter API)
+  - name: Economy
+    description: Экономические показатели (IMF WEO API)
+  - name: News
+    description: Новости стран (Currents API)
 
 paths:
   /countries:
@@ -153,24 +159,187 @@ paths:
                   visa_score: 173
                   internet_speed: 45.2
                 economic_indicators:
-                  - year: 2024
-                    gdp_per_capita: 48690
-                    inflation: 2.1
-                    unemployment: 3.4
-                  - year: 2023
-                    gdp_per_capita: 47520
-                    inflation: 1.9
-                    unemployment: 3.2
+                  gdp_per_capita:
+                    value: 48690
+                    year: 2025
+                    source: IMF WEO
+                  inflation:
+                    value: 2.1
+                    year: 2025
+                    source: IMF WEO
+                  unemployment:
+                    value: 3.4
+                    year: 2025
+                    source: IMF WEO
                 news:
                   - title: Germany economy grows 2.5% in Q4
                     description: Economic growth exceeds expectations...
                     url: https://news.com/germany-economy
-                    published_at: 2026-11-08T10:30:00Z
+                    category: economy
+                    published_at: "2026-11-08T10:30:00+00:00"
                     source: Reuters
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalError'
+
+  /currency/rates/{currency}:
+    get:
+      tags:
+        - Currency
+      summary: Получить курс валюты к USD
+      description: Возвращает текущий курс указанной валюты относительно USD (через Frankfurter API).
+      parameters:
+        - name: currency
+          in: path
+          required: true
+          description: Код валюты (ISO 4217)
+          schema:
+            type: string
+            example: EUR
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrencyRateResponse'
+              example:
+                currency: EUR
+                rate_to_usd: 1.08
+        '404':
+          description: Курс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error:
+                  code: NOT_FOUND
+                  message: Rate not found for EUR
+
+  /currency/rates/country/{country_name}:
+    get:
+      tags:
+        - Currency
+      summary: Получить курс валюты страны к USD
+      description: Возвращает текущий курс валюты указанной страны относительно USD.
+      parameters:
+        - name: country_name
+          in: path
+          required: true
+          description: Название страны
+          schema:
+            type: string
+            example: Germany
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CountryCurrencyRateResponse'
+              example:
+                country: Germany
+                rate_to_usd: 1.08
+        '404':
+          description: Валюта или курс не найдены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error:
+                  code: NOT_FOUND
+                  message: Currency/rate not found for Germany
+
+  /economy/{country_name}:
+    get:
+      tags:
+        - Economy
+      summary: Получить экономические данные страны
+      description: Возвращает экономические показатели страны (ВВП, инфляция, безработица) из кэша БД или IMF API.
+      parameters:
+        - name: country_name
+          in: path
+          required: true
+          description: Название страны
+          schema:
+            type: string
+            example: Germany
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EconomyResponse'
+              example:
+                country_id: 1
+                year: 2025
+                gdp_per_capita: 48690
+                inflation: 2.1
+                unemployment: 3.4
+        '404':
+          description: Данные не найдены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error:
+                  code: NOT_FOUND
+                  message: Economic data not found for Germany
+
+  /news/{country_name}:
+    get:
+      tags:
+        - News
+      summary: Получить новости страны
+      description: Возвращает последние новости о стране из кэша БД или Currents API.
+      parameters:
+        - name: country_name
+          in: path
+          required: true
+          description: Название страны
+          schema:
+            type: string
+            example: Germany
+        - name: limit
+          in: query
+          description: Количество новостей (1-20)
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 20
+            default: 10
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsListResponse'
+              example:
+                country: Germany
+                count: 10
+                articles:
+                  - title: Germany economy grows 2.5% in Q4
+                    description: Economic growth exceeds expectations...
+                    url: https://news.com/germany-economy
+                    category: economy
+                    published_at: "2026-11-08T10:30:00+00:00"
+                    source: Reuters
+        '404':
+          description: Новости не найдены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error:
+                  code: NOT_FOUND
+                  message: News not found for Germany
 
   /recommend:
     post:
@@ -628,29 +797,23 @@ components:
           format: double
           description: Скорость интернета (Mbps)
 
-    EconomicIndicator:
+    EconomicIndicatorDetail:
       type: object
+      description: Детали экономического показателя за год
       properties:
+        value:
+          type: number
+          format: double
+          description: Значение показателя
         year:
           type: integer
           description: Год
-        gdp_per_capita:
-          type: number
-          format: double
-          description: ВВП на душу населения (USD)
-        inflation:
-          type: number
-          format: double
-          description: Инфляция (%)
-        unemployment:
-          type: number
-          format: double
-          description: Безработица (%)
+        source:
+          type: string
+          description: Источник данных
       required:
+        - value
         - year
-        - gdp_per_capita
-        - inflation
-        - unemployment
 
     NewsArticle:
       type: object
@@ -665,6 +828,9 @@ components:
           type: string
           format: uri
           description: URL статьи
+        category:
+          type: string
+          description: Категория новости
         published_at:
           type: string
           format: date-time
@@ -723,9 +889,9 @@ components:
             metrics:
               $ref: '#/components/schemas/CountryMetrics'
             economic_indicators:
-              type: array
-              items:
-                $ref: '#/components/schemas/EconomicIndicator'
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/EconomicIndicatorDetail'
             news:
               type: array
               items:
@@ -1004,6 +1170,78 @@ components:
             - message
       required:
         - error
+
+    CurrencyRateResponse:
+      type: object
+      properties:
+        currency:
+          type: string
+          description: Код валюты (ISO 4217)
+        rate_to_usd:
+          type: number
+          format: double
+          description: Курс валюты к USD
+      required:
+        - currency
+        - rate_to_usd
+
+    CountryCurrencyRateResponse:
+      type: object
+      properties:
+        country:
+          type: string
+          description: Название страны
+        rate_to_usd:
+          type: number
+          format: double
+          description: Курс валюты страны к USD
+      required:
+        - country
+        - rate_to_usd
+
+    EconomyResponse:
+      type: object
+      properties:
+        country_id:
+          type: integer
+          description: ID страны
+        year:
+          type: integer
+          description: Год данных
+        gdp_per_capita:
+          type: number
+          format: double
+          description: ВВП на душу населения (USD)
+        inflation:
+          type: number
+          format: double
+          description: Инфляция (%)
+        unemployment:
+          type: number
+          format: double
+          description: Безработица (%)
+      required:
+        - country_id
+        - year
+
+    NewsListResponse:
+      type: object
+      properties:
+        country:
+          type: string
+          description: Название страны
+        count:
+          type: integer
+          description: Количество новостей
+        articles:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewsArticle'
+          description: Список новостей
+      required:
+        - country
+        - count
+        - articles
 
   responses:
     BadRequest:
