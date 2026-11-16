@@ -27,20 +27,27 @@ data class CountryMetrics(
 
 data class CountryListItem(
     val country: Country,
-    val metrics: CountryMetrics
+    val metrics: CountryMetrics?
 )
 
-data class EconomicIndicator(
+data class EconomicIndicatorDetail(
+    val value: Double,
     val year: Int,
-    val gdpPerCapita: Double,
-    val inflation: Double,
-    val unemployment: Double
+    val source: String?
 )
 
-data class
+data class NewsArticle(
+    val title: String,
+    val description: String?,
+    val url: String,
+    val category: String?,
+    val publishedAt: String,
+    val source: String?
+)
 
 data class CountryDetails(
     val country: Country,
-    val metrics: CountryMetrics,
-    val economicIndicators:
+    val metrics: CountryMetrics?,
+    val economicIndicators: Map<String, EconomicIndicatorDetail>?,
+    val news: List<NewsArticle>?
 )
