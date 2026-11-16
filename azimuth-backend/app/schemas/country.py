@@ -24,7 +24,7 @@ class CountryDetail(CountryBase):
     latitude: float
     longitude: float
     metrics: Optional[dict] = None
-    economic_indicators: Optional[List[dict]] = None
+    economic_indicators: Optional[dict] = None
     news: Optional[List[dict]] = None
 
 

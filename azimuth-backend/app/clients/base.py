@@ -10,7 +10,7 @@ class HttpClient:
         self.cache_ttl = cache_ttl
         self._cache: Dict[str, tuple[float, Any]] = {}
 
-    def get(self, url: str, timeout: int = 10) -> Optional[Any]:
+    def get(self, url: str, timeout: int = 30) -> Optional[Any]:
         cache_key = url
         if cache_key in self._cache:
             cached_time, cached_data = self._cache[cache_key]

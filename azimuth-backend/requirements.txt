@@ -16,7 +16,6 @@ pydantic-settings
 # Authentication
 python-jose[cryptography]
 passlib[bcrypt]
-bcrypt<4.1.0
 python-multipart
 email-validator
 
@@ -28,12 +27,8 @@ matplotlib
 seaborn
 scipy
 
-# Testing
-pytest
-pytest-cov
-httpx
-
 # API clients
 requests
 lxml
 html5lib
+imfp

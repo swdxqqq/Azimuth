@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from typing import Optional
 from app.database import get_db
 from app.models.country import Country, Metric
+from app.models.metrics import EconomicIndicator, NewsArticle
 from app.schemas.country import CountryListResponse, CountryDetailResponse, CountryListItem
 
 router = APIRouter(prefix="/countries", tags=["Countries"])
@@ -78,6 +79,34 @@ def get_country(country_id: int, db: Session = Depends(get_db)):
     else:
         metrics_dict = {}
     
+    econ_indicators = db.query(EconomicIndicator).filter(
+        EconomicIndicator.country_id == country_id
+    ).all()
+    
+    econ_dict = {}
+    for ei in econ_indicators:
+        econ_dict[ei.indicator_type] = {
+            "value": ei.value,
+            "year": ei.year,
+            "source": ei.source
+        }
+    
+    news_articles = db.query(NewsArticle).filter(
+        NewsArticle.country_id == country_id
+    ).order_by(NewsArticle.published_at.desc()).limit(10).all()
+    
+    news_list = [
+        {
+            "title": a.title,
+            "description": a.description,
+            "url": a.url,
+            "category": a.category,
+            "published_at": a.published_at.isoformat() if a.published_at else None,
+            "source": a.source
+        }
+        for a in news_articles
+    ]
+    
     return CountryDetailResponse(
         id=country.id,
         name=country.name,
@@ -88,6 +117,6 @@ def get_country(country_id: int, db: Session = Depends(get_db)):
         latitude=country.latitude,
         longitude=country.longitude,
         metrics=metrics_dict,
-        economic_indicators=[],
-        news=[]
+        economic_indicators=econ_dict,
+        news=news_list
     )
