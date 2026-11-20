@@ -103,7 +103,7 @@ def main():
     df_year, X = prepare_clustering_data(2025)
     find_optimal_k(X) 
     for k in [3, 4, 5]:
-        visualize_clusters_pca(X, n_clusters=k)0
+        visualize_clusters_pca(X, n_clusters=k)
         
 if __name__ == '__main__':
     main()

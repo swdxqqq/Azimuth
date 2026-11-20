@@ -32,3 +32,8 @@ requests
 lxml
 html5lib
 imfp
+
+# Testing
+pytest
+pytest-cov
+httpx

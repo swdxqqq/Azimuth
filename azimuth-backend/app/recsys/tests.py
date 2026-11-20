@@ -43,14 +43,12 @@ class TestRecSysEngine(unittest.TestCase):
 
     def test_03_disable_both_climate_no_temperature(self):
         prefs = self._make_equal_prefs()
-        prefs["climate_comfort"].enabled = False
-        prefs["climate_seasonality"].enabled = False
+        prefs["climate"].enabled = False
 
         temp_pref = TemperaturePreference(enabled=False)
 
         weights = self.engine.get_weights(prefs)
-        self.assertNotIn("climate_comfort", weights)
-        self.assertNotIn("climate_seasonality", weights)
+        self.assertNotIn("climate", weights)
 
         results = self.engine.recommend(prefs, temp_pref, top_n=5)
         self.assertEqual(len(results), 5)
@@ -62,7 +60,7 @@ class TestRecSysEngine(unittest.TestCase):
         weights = self.engine.get_weights(prefs)
 
         self.assertNotIn("crime", weights)
-        self.assertIn("health_care", weights)
+        self.assertIn("healthcare", weights)
         self.assertIn("pollution", weights)
 
     def test_05_reenable_criterion_restores_priority(self):

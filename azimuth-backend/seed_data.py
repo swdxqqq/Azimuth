@@ -33,6 +33,14 @@ def load_countries_data():
     db = SessionLocal()
     
     try:
+        existing_country_count = db.query(Country).count()
+        if existing_country_count:
+            print(
+                f"Database already contains {existing_country_count} countries; "
+                "skipping initial data import."
+            )
+            return
+
         for _, row in df.iterrows():
             country_name = row['Country']
             capital = capitals_dict.get(country_name, 'Unknown')

@@ -41,61 +41,61 @@ class EngineConfig:
 CRITERIA: Dict[str, Criterion] = {
     "crime": Criterion(
         name="Crime Index",
-        column="crime",
+        column="Crime Index",
         direction=CriterionDirection.LOWER_IS_BETTER,
         group="Safety & Health"
     ),
     "safety": Criterion(
         name="Safety Index",
-        column="safety",
+        column="Safety Index",
         direction=CriterionDirection.HIGHER_IS_BETTER,
         group="Safety & Health"
     ),
     "healthcare": Criterion(
         name="Health Care Index",
-        column="healthcare",
+        column="Health Care Index",
         direction=CriterionDirection.HIGHER_IS_BETTER,
         group="Safety & Health"
     ),
     "pollution": Criterion(
         name="Pollution Index",
-        column="pollution",
+        column="Pollution Index",
         direction=CriterionDirection.LOWER_IS_BETTER,
         group="Safety & Health"
     ),
     "cost_of_living": Criterion(
         name="Cost of Living Index",
-        column="cost_of_living",
+        column="Cost of Living Index",
         direction=CriterionDirection.LOWER_IS_BETTER,
         group="Cost & Economy"
     ),
     "purchasing_power": Criterion(
         name="Local Purchasing Power Index",
-        column="purchasing_power",
+        column="Local Purchasing Power Index",
         direction=CriterionDirection.HIGHER_IS_BETTER,
         group="Cost & Economy"
     ),
     "property_price_to_income": Criterion(
         name="Price to Income Ratio",
-        column="property_price_to_income",
+        column="Price To Income Ratio",
         direction=CriterionDirection.LOWER_IS_BETTER,
         group="Cost & Economy"
     ),
     "climate": Criterion(
         name="Climate Comfort Score",
-        column="climate",
+        column="climate_comfort_score",
         direction=CriterionDirection.HIGHER_IS_BETTER,
         group="Climate"
     ),
     "internet_speed": Criterion(
         name="Internet Speed",
-        column="internet_speed",
+        column="internet_speed_mbps",
         direction=CriterionDirection.HIGHER_IS_BETTER,
         group="Digital & Infrastructure"
     ),
     "traffic": Criterion(
         name="Traffic Index",
-        column="traffic",
+        column="Traffic Index",
         direction=CriterionDirection.LOWER_IS_BETTER,
         group="Digital & Infrastructure"
     ),

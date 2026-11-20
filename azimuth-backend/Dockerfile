@@ -1,25 +1,22 @@
-# Используем официальный Python образ
 FROM python:3.11-slim
 
-# Устанавливаем рабочую директорию
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
 WORKDIR /app
 
-# Устанавливаем системные зависимости для PostgreSQL
-RUN apt-get update && apt-get install -y \
-    libpq-dev \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgomp1 \
     && rm -rf /var/lib/apt/lists/*
 
-# Копируем зависимости
-COPY requirements.txt .
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt \
+    && useradd --create-home --uid 10001 azimuth
 
-# Устанавливаем Python зависимости
-RUN pip install --no-cache-dir -r requirements.txt
+COPY --chown=azimuth:azimuth . .
 
-# Копируем код приложения
-COPY . .
+USER azimuth
 
-# Открываем порт
-EXPOSE 8000
+EXPOSE 10000
 
-# Запускаем приложение
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "alembic upgrade head && python seed_data.py && exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-10000}"]
