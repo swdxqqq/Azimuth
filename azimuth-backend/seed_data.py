@@ -1,9 +1,42 @@
+from pathlib import Path
+
 import pandas as pd
 from sqlalchemy.orm import Session
 from app.database import engine, SessionLocal, Base
 from app.models.country import Country, Metric
 from app.models.user import User, UserPreference, FavoriteCountry
 from app.models.metrics import EconomicIndicator, NewsArticle
+
+FLAG_ASSETS_DIR = Path(__file__).resolve().parent / "assets" / "flags"
+FLAG_ASSET_FILENAMES = {
+    asset.name
+    for asset in FLAG_ASSETS_DIR.iterdir()
+    if asset.is_file() and asset.suffix.lower() == ".svg"
+}
+FLAG_ASSET_OVERRIDES = {
+    "United Kingdom": "GB-UKM - United Kingdom.svg",
+}
+
+
+def get_flag_url(code: str, country_name: str) -> str:
+    filename = FLAG_ASSET_OVERRIDES.get(
+        country_name,
+        f"{code} - {country_name}.svg",
+    )
+    if filename not in FLAG_ASSET_FILENAMES:
+        matches = sorted(
+            asset_name
+            for asset_name in FLAG_ASSET_FILENAMES
+            if asset_name.startswith(f"{code} - ")
+            or asset_name.startswith(f"{code}-")
+        )
+        if len(matches) == 1:
+            filename = matches[0]
+        else:
+            print(f"Flag asset not found for {country_name} ({code})")
+            return ""
+
+    return f"/assets/flags/{filename}"
 
 
 def create_tables():
@@ -35,6 +68,17 @@ def load_countries_data():
     try:
         existing_country_count = db.query(Country).count()
         if existing_country_count:
+            updated_flags = 0
+            for country in db.query(Country).all():
+                flag_url = get_flag_url(country.code, country.name)
+                if country.flag_url != flag_url:
+                    country.flag_url = flag_url
+                    updated_flags += 1
+
+            if updated_flags:
+                db.commit()
+                print(f"Updated flag URLs for {updated_flags} countries.")
+
             print(
                 f"Database already contains {existing_country_count} countries; "
                 "skipping initial data import."
@@ -128,7 +172,7 @@ def load_countries_data():
                 code=code,
                 capital=capital,
                 region=region,
-                flag_url=f"/assets/flags/{code} - {country_name}.svg",
+                flag_url=get_flag_url(code, country_name),
                 latitude=latitude,
                 longitude=longitude
             )
