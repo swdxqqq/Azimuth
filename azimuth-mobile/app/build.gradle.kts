@@ -73,4 +73,11 @@ dependencies {
     kapt(libs.room.compiler)
 
     implementation(libs.datastore.preferences)
+
+    implementation(libs.navigation.compose)
+    implementation(libs.hilt.navigation.compose)
+    implementation(libs.lifecycle.viewmodel.compose)
+    implementation(libs.compose.material.icons.extended)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.svg)
 }

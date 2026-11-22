@@ -2,6 +2,7 @@ package com.example.azimuth_mobile.data.mapper
 
 import com.example.azimuth_mobile.data.local.entity.CountryEntity
 import com.example.azimuth_mobile.data.local.entity.FavoriteEntity
+import com.example.azimuth_mobile.data.remote.BackendConfig
 import com.example.azimuth_mobile.data.remote.dto.AuthResponseDto
 import com.example.azimuth_mobile.data.remote.dto.CountryCurrencyRateResponseDto
 import com.example.azimuth_mobile.data.remote.dto.CountryDetailResponseDto
@@ -35,7 +36,7 @@ fun CountryListItemDto.toDomain(): CountryListItem = CountryListItem(
         code = code,
         capital = capital,
         region = region,
-        flagUrl = flagUrl
+        flagUrl = BackendConfig.resolveAssetUrl(flagUrl)
     ),
     metrics = metrics?.toDomain()
 )
@@ -63,7 +64,7 @@ fun CountryDetailResponseDto.toDomain(): CountryDetails = CountryDetails(
         code = code,
         capital = capital,
         region = region,
-        flagUrl = flagUrl,
+        flagUrl = BackendConfig.resolveAssetUrl(flagUrl),
         latitude = latitude,
         longitude = longitude
     ),
@@ -117,7 +118,7 @@ fun CountryEntity.toDomainListItem(): CountryListItem = CountryListItem(
         code = code,
         capital = capital,
         region = region,
-        flagUrl = flagUrl,
+        flagUrl = BackendConfig.resolveAssetUrl(flagUrl),
         latitude = latitude,
         longitude = longitude
     ),
@@ -142,7 +143,7 @@ fun FavoriteCountryDto.toDomain(): FavoriteCountry = FavoriteCountry(
     name = name,
     code = code,
     capital = capital,
-    flagUrl = flagUrl,
+    flagUrl = BackendConfig.resolveAssetUrl(flagUrl).orEmpty(),
     addedAt = addedAt
 )
 
@@ -151,7 +152,7 @@ fun FavoriteEntity.toDomain(): FavoriteCountry = FavoriteCountry(
     name = name,
     code = code,
     capital = capital,
-    flagUrl = flagUrl,
+    flagUrl = BackendConfig.resolveAssetUrl(flagUrl).orEmpty(),
     addedAt = addedAt
 )
 

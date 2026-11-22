@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.pm.ApplicationInfo
 import com.example.azimuth_mobile.data.remote.AuthorizationInterceptor
 import com.example.azimuth_mobile.data.remote.AzimuthApi
+import com.example.azimuth_mobile.data.remote.BackendConfig
 import com.example.azimuth_mobile.data.repository.AuthRepositoryImpl
 import com.example.azimuth_mobile.data.repository.CountryRepositoryImpl
 import com.example.azimuth_mobile.data.repository.DataRepositoryImpl
@@ -57,7 +58,7 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(client: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://azimuth-5rph.onrender.com/api/v1/")
+            .baseUrl(BackendConfig.API_BASE_URL)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
