@@ -16,7 +16,12 @@ def get_rate_to_usd(currency: str):
 
 @router.get("/rates/country/{country_name}")
 def get_country_rate_to_usd(country_name: str):
+    currency_code = client.get_country_currency(country_name)
     rate = client.get_country_rate_to_usd(country_name)
-    if rate is None:
+    if currency_code is None or rate is None:
         raise HTTPException(status_code=404, detail=f"Currency/rate not found for {country_name}")
-    return {"country": country_name, "rate_to_usd": rate}
+    return {
+        "country": country_name,
+        "currency_code": currency_code,
+        "rate_to_usd": rate,
+    }

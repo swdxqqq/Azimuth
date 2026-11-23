@@ -12,6 +12,7 @@ CAPITAL_COORDINATES = {
     "Austria": (48.2082, 16.3738),            # Vienna
     "Azerbaijan": (40.4093, 49.8671),         # Baku
     "Bahrain": (26.2285, 50.5860),            # Manama
+    "Bangladesh": (23.8103, 90.4125),         # Dhaka
     "Belarus": (53.9006, 27.5590),            # Minsk
     "Belgium": (50.8503, 4.3517),             # Brussels
     "Bolivia": (-16.4897, -68.1193),          # La Paz
@@ -86,6 +87,7 @@ CAPITAL_COORDINATES = {
     "Switzerland": (46.9481, 7.4474),         # Bern
     "Taiwan": (25.0330, 121.5654),            # Taipei
     "Thailand": (13.7563, 100.5018),          # Bangkok
+    "Tunisia": (36.8065, 10.1815),            # Tunis
     "Turkey": (39.9334, 32.8597),             # Ankara
     "Ukraine": (50.4501, 30.5234),            # Kiev
     "United Arab Emirates": (24.4539, 54.3773),  # Abu Dhabi

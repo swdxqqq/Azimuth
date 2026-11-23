@@ -27,7 +27,7 @@ COUNTRY_CODES: Dict[str, str] = {
     'Egypt': 'EG', 'South Africa': 'ZA', 'Morocco': 'MA',
     'Tunisia': 'TN', 'Algeria': 'DZ', 'Nigeria': 'NG',
     'Kenya': 'KE', 'Ghana': 'GH', 'Senegal': 'SN',
-    'UAE': 'AE', 'Saudi Arabia': 'SA', 'Qatar': 'QA',
+    'UAE': 'AE', 'United Arab Emirates': 'AE', 'Saudi Arabia': 'SA', 'Qatar': 'QA',
     'Kuwait': 'KW', 'Bahrain': 'BH', 'Oman': 'OM',
     'Jordan': 'JO', 'Lebanon': 'LB', 'Iran': 'IR',
     'Iraq': 'IQ', 'Kazakhstan': 'KZ', 'Uzbekistan': 'UZ',

@@ -6,6 +6,7 @@ from app.database import engine, SessionLocal, Base
 from app.models.country import Country, Metric
 from app.models.user import User, UserPreference, FavoriteCountry
 from app.models.metrics import EconomicIndicator, NewsArticle
+from app.services.country_reference import get_country_reference, load_reference_data
 
 FLAG_ASSETS_DIR = Path(__file__).resolve().parent / "assets" / "flags"
 FLAG_ASSET_FILENAMES = {
@@ -16,6 +17,7 @@ FLAG_ASSET_FILENAMES = {
 FLAG_ASSET_OVERRIDES = {
     "United Kingdom": "GB-UKM - United Kingdom.svg",
 }
+CLIMATE_SCORE_SOURCE = "Open-Meteo Archive 2020-2024 temperature comfort"
 
 
 def get_flag_url(code: str, country_name: str) -> str:
@@ -62,6 +64,12 @@ def load_countries_data():
     # Load visa score
     visa_df = pd.read_csv('data/visa_score.csv')
     visa_dict = dict(zip(visa_df['Country'], visa_df['Value']))
+    populations, languages = load_reference_data(Path(__file__).resolve().parent / "data")
+    climate_scores = {
+        country_name: float(score)
+        for country_name, score in zip(df["Country"], df["climate_comfort_score"])
+        if pd.notna(score)
+    }
     
     db = SessionLocal()
     
@@ -69,15 +77,55 @@ def load_countries_data():
         existing_country_count = db.query(Country).count()
         if existing_country_count:
             updated_flags = 0
+            updated_reference = 0
+            updated_climate = 0
             for country in db.query(Country).all():
                 flag_url = get_flag_url(country.code, country.name)
                 if country.flag_url != flag_url:
                     country.flag_url = flag_url
                     updated_flags += 1
 
-            if updated_flags:
+                reference = get_country_reference(
+                    country.name,
+                    country.code,
+                    populations,
+                    languages,
+                )
+                for field, value in reference.items():
+                    if value is not None and getattr(country, field) != value:
+                        setattr(country, field, value)
+                        updated_reference += 1
+
+                climate_score = climate_scores.get(country.name)
+                if climate_score is not None:
+                    climate_metric = db.query(Metric).filter(
+                        Metric.country_id == country.id,
+                        Metric.metric_type == "climate",
+                    ).order_by(Metric.year.desc()).first()
+                    if climate_metric is None:
+                        db.add(Metric(
+                            country_id=country.id,
+                            year=2025,
+                            metric_type="climate",
+                            value=climate_score,
+                            source=CLIMATE_SCORE_SOURCE,
+                        ))
+                        updated_climate += 1
+                    elif (
+                        climate_metric.value != climate_score
+                        or climate_metric.source != CLIMATE_SCORE_SOURCE
+                    ):
+                        climate_metric.value = climate_score
+                        climate_metric.source = CLIMATE_SCORE_SOURCE
+                        updated_climate += 1
+
+            if updated_flags or updated_reference or updated_climate:
                 db.commit()
-                print(f"Updated flag URLs for {updated_flags} countries.")
+                print(
+                    f"Updated {updated_flags} flag URLs, "
+                    f"{updated_reference} reference fields, and "
+                    f"{updated_climate} climate scores."
+                )
 
             print(
                 f"Database already contains {existing_country_count} countries; "
@@ -134,6 +182,12 @@ def load_countries_data():
             }
             
             code = country_codes.get(country_name, 'XX')
+            reference = get_country_reference(
+                country_name,
+                code,
+                populations,
+                languages,
+            )
             
             # Region mapping
             regions = {
@@ -174,7 +228,10 @@ def load_countries_data():
                 region=region,
                 flag_url=get_flag_url(code, country_name),
                 latitude=latitude,
-                longitude=longitude
+                longitude=longitude,
+                population=reference["population"],
+                languages=reference["languages"],
+                timezone=reference["timezone"],
             )
             db.add(country)
             db.flush()
@@ -201,13 +258,21 @@ def load_countries_data():
             for metric_type, csv_column in metrics_mapping.items():
                 if csv_column and csv_column in row:
                     value = row[csv_column]
+                    if metric_type == "climate":
+                        value = climate_scores.get(country_name, value)
                     if pd.notna(value):
                         metric = Metric(
                             country_id=country.id,
                             year=2025,
                             metric_type=metric_type,
                             value=float(value),
-                            source='numbeo' if metric_type != 'climate' and metric_type != 'internet_speed' and metric_type != 'visa_score' else 'other'
+                            source=(
+                                CLIMATE_SCORE_SOURCE
+                                if metric_type == "climate"
+                                else "numbeo"
+                                if metric_type not in ("internet_speed", "visa_score")
+                                else "other"
+                            )
                         )
                         db.add(metric)
             

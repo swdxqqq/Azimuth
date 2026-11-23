@@ -146,6 +146,10 @@ paths:
                 flag_url: https://flagsapi.com/DE.png
                 latitude: 52.5200
                 longitude: 13.4050
+                population: 84552267
+                languages:
+                  - German
+                timezone: Europe/Berlin
                 metrics:
                   cost_of_living: 65.4
                   rent_index: 42.3
@@ -241,6 +245,7 @@ paths:
                 $ref: '#/components/schemas/CountryCurrencyRateResponse'
               example:
                 country: Germany
+                currency_code: EUR
                 rate_to_usd: 1.08
         '404':
           description: Валюта или курс не найдены
@@ -751,44 +756,51 @@ components:
 
     CountryMetrics:
       type: object
-      description: Актуальные метрики страны (нормализованные 0-100)
+      description: >-
+        Актуальные метрики страны. Индексы сохраняют исходные шкалы источников и
+        сравниваются по отдельности; Climate — температурный comfort score 0–100,
+        Visa Score — количество безвизовых направлений, Internet Speed — Mbps.
       properties:
         cost_of_living:
           type: number
           format: double
-          description: Индекс стоимости жизни (меньше = дешевле)
+          description: Исходный индекс стоимости жизни (меньше = дешевле)
         rent_index:
           type: number
           format: double
-          description: Индекс аренды
+          description: Исходный индекс аренды
         safety:
           type: number
           format: double
-          description: Индекс безопасности
+          description: Исходный индекс безопасности (больше = безопаснее)
         healthcare:
           type: number
           format: double
-          description: Индекс здравоохранения
+          description: Исходный индекс здравоохранения (больше = лучше доступ к медицине)
         pollution:
           type: number
           format: double
-          description: Индекс загрязнения (меньше = чище)
+          description: Исходный индекс загрязнения (меньше = чище)
         quality_of_life:
           type: number
           format: double
-          description: Индекс качества жизни
+          description: Исходный индекс качества жизни
         climate:
           type: number
           format: double
-          description: Индекс климата
+          description: >-
+            Comfort score 0–100. Для каждого месяца берётся средняя температура
+            столицы за 2020–2024 годы: 15–25°C дают 100 баллов, за каждый градус
+            за пределами диапазона снимается 10 баллов (минимум 0); затем 12
+            месячных оценок усредняются.
         purchasing_power:
           type: number
           format: double
-          description: Индекс покупательной способности
+          description: Исходный индекс покупательной способности (больше = выше)
         property_price_to_income:
           type: number
           format: double
-          description: Отношение цены жилья к доходу
+          description: Исходное отношение цены жилья к доходу (меньше = доступнее жильё)
         visa_score:
           type: integer
           description: Визовый рейтинг (количество безвизовых стран)
@@ -886,6 +898,21 @@ components:
         - $ref: '#/components/schemas/Country'
         - type: object
           properties:
+            population:
+              type: integer
+              format: int64
+              nullable: true
+              description: Население страны из локального справочника
+            languages:
+              type: array
+              nullable: true
+              description: Языки, используемые в стране
+              items:
+                type: string
+            timezone:
+              type: string
+              nullable: true
+              description: Часовой пояс столицы в формате IANA
             metrics:
               $ref: '#/components/schemas/CountryMetrics'
             economic_indicators:
@@ -1191,12 +1218,17 @@ components:
         country:
           type: string
           description: Название страны
+        currency_code:
+          type: string
+          description: Код валюты страны по ISO 4217
+          example: EUR
         rate_to_usd:
           type: number
           format: double
           description: Курс валюты страны к USD
       required:
         - country
+        - currency_code
         - rate_to_usd
 
     EconomyResponse:

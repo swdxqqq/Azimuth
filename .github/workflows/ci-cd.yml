@@ -33,7 +33,7 @@ jobs:
         JWT_SECRET_KEY: test-secret-key
         JWT_ALGORITHM: HS256
         ACCESS_TOKEN_EXPIRE_MINUTES: 30
-      run: python -m pytest azimuth-backend/app/recsys/tests.py -v --tb=short
+      run: python -m pytest azimuth-backend/app/recsys/tests.py azimuth-backend/app/tests/test_data_sources.py -v --tb=short
 
     - name: Test summary
       if: always()

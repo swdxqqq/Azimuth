@@ -20,9 +20,12 @@ class CountryListItem(CountryBase):
 
 class CountryDetail(CountryBase):
     model_config = ConfigDict(from_attributes=True)
-    
+
     latitude: float
     longitude: float
+    population: Optional[int] = None
+    languages: Optional[List[str]] = None
+    timezone: Optional[str] = None
     metrics: Optional[dict] = None
     economic_indicators: Optional[dict] = None
     news: Optional[List[dict]] = None

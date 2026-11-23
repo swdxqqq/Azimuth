@@ -23,6 +23,7 @@ email-validator
 # Data processing
 numpy
 pandas
+pytz
 scikit-learn
 matplotlib
 seaborn
