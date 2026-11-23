@@ -8,6 +8,7 @@ import com.example.azimuth_mobile.data.remote.dto.CountryCurrencyRateResponseDto
 import com.example.azimuth_mobile.data.remote.dto.CountryDetailResponseDto
 import com.example.azimuth_mobile.data.remote.dto.CountryListItemDto
 import com.example.azimuth_mobile.data.remote.dto.CountryMetricsDto
+import com.example.azimuth_mobile.data.remote.dto.EconomyResponseDto
 import com.example.azimuth_mobile.data.remote.dto.FavoriteCountryDto
 import com.example.azimuth_mobile.data.remote.dto.NewsArticleDto
 import com.example.azimuth_mobile.data.remote.dto.PreferenceDto
@@ -76,8 +77,19 @@ fun CountryDetailResponseDto.toDomain(): CountryDetails = CountryDetails(
             source = detail.source
         )
     },
-    news = news?.map { it.toDomain() }
+    news = news?.map { it.toDomain() },
+    population = population,
+    languages = languages,
+    timezone = timezone
 )
+
+fun EconomyResponseDto.toEconomicIndicators(): Map<String, EconomicIndicatorDetail> = buildMap {
+    gdpPerCapita?.let {
+        put("gdp_per_capita", EconomicIndicatorDetail(it, year, "IMF WEO"))
+    }
+    inflation?.let { put("inflation", EconomicIndicatorDetail(it, year, "IMF WEO")) }
+    unemployment?.let { put("unemployment", EconomicIndicatorDetail(it, year, "IMF WEO")) }
+}
 
 // NewsArticle
 fun NewsArticleDto.toDomain(): NewsArticle = NewsArticle(
@@ -192,6 +204,7 @@ fun TemperaturePreferenceDto.toDomain(): TemperaturePreference = TemperaturePref
 // CurrencyRate
 fun CountryCurrencyRateResponseDto.toDomain(): CountryCurrencyRate = CountryCurrencyRate(
     country = country,
+    currencyCode = currencyCode,
     rateToUsd = rateToUsd
 )
 

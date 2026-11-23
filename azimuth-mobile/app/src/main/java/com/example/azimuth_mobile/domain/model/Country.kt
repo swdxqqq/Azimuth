@@ -49,5 +49,8 @@ data class CountryDetails(
     val country: Country,
     val metrics: CountryMetrics?,
     val economicIndicators: Map<String, EconomicIndicatorDetail>?,
-    val news: List<NewsArticle>?
+    val news: List<NewsArticle>?,
+    val population: Long? = null,
+    val languages: List<String>? = null,
+    val timezone: String? = null
 )

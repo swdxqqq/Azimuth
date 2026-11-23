@@ -80,12 +80,20 @@ fun AzimuthNavigation() {
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             BottomNavigationBar(
-                selectedRoute = if (currentRoute == Routes.CountryDetailPattern) {
+                selectedRoute = if (currentRoute.startsWith(Routes.CountryDetail)) {
                     Routes.Catalog
                 } else {
                     currentRoute
                 },
-                onNavigate = { route -> navigateTo(navController, route) }
+                onNavigate = { route ->
+                    if (route == Routes.Catalog && currentRoute != Routes.Catalog) {
+                        if (!navController.popBackStack(Routes.Catalog, inclusive = false)) {
+                            navigateTo(navController, Routes.Catalog)
+                        }
+                    } else {
+                        navigateTo(navController, route)
+                    }
+                }
             )
         }
     ) { innerPadding ->
@@ -130,8 +138,8 @@ fun AzimuthNavigation() {
                 val countryId = requireNotNull(backStackEntry.arguments?.getInt("countryId"))
                 val detailViewModel: CountryDetailViewModel = hiltViewModel()
                 val detailState by detailViewModel.uiState.collectAsState()
-                LaunchedEffect(countryId) {
-                    detailViewModel.loadCountry(countryId)
+                LaunchedEffect(countryId, state.countries) {
+                    detailViewModel.loadCountry(countryId, state.countries)
                 }
                 CountryDetailScreen(
                     state = detailState,
@@ -141,7 +149,7 @@ fun AzimuthNavigation() {
                         viewModel.addToCompare(countryId)
                         navigateTo(navController, Routes.Compare)
                     },
-                    onRetry = { detailViewModel.loadCountry(countryId) }
+                    onRetry = { detailViewModel.loadCountry(countryId, state.countries) }
                 )
             }
         }
@@ -291,14 +299,14 @@ private fun FavoritesScreen(
                 .fillMaxSize()
                 .padding(horizontal = 20.dp)
         ) {
-        Text(
-            text = "Favorites",
-            modifier = Modifier.padding(top = 12.dp),
-            color = MaterialTheme.colorScheme.onBackground,
-            fontFamily = nunitoFamily,
-            fontSize = 26.sp,
-            fontWeight = FontWeight.ExtraBold
-        )
+            Text(
+                text = "Favorites",
+                modifier = Modifier.padding(top = 12.dp),
+                color = MaterialTheme.colorScheme.onBackground,
+                fontFamily = nunitoFamily,
+                fontSize = 26.sp,
+                fontWeight = FontWeight.ExtraBold
+            )
             Row(
                 modifier = Modifier.padding(top = 20.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)

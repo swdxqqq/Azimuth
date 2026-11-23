@@ -42,6 +42,9 @@ data class CountryDetailResponseDto(
     @SerializedName("flag_url") val flagUrl: String,
     val latitude: Double,
     val longitude: Double,
+    val population: Long? = null,
+    val languages: List<String>? = null,
+    val timezone: String? = null,
     val metrics: CountryMetricsDto?,
     @SerializedName("economic_indicators") val economicIndicators: Map<String, EconomicIndicatorDetailDto>?,
     val news: List<NewsArticleDto>?

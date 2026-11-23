@@ -5,6 +5,7 @@ import com.example.azimuth_mobile.data.remote.dto.AuthResponseDto
 import com.example.azimuth_mobile.data.remote.dto.CountryCurrencyRateResponseDto
 import com.example.azimuth_mobile.data.remote.dto.CountryDetailResponseDto
 import com.example.azimuth_mobile.data.remote.dto.CountryListResponseDto
+import com.example.azimuth_mobile.data.remote.dto.EconomyResponseDto
 import com.example.azimuth_mobile.data.remote.dto.FavoriteListResponseDto
 import com.example.azimuth_mobile.data.remote.dto.FavoriteResponseDto
 import com.example.azimuth_mobile.data.remote.dto.NewsListResponseDto
@@ -37,6 +38,9 @@ interface AzimuthApi {
 
     @GET("currency/rates/country/{countryName}")
     suspend fun getCurrencyRate(@Path("countryName") countryName: String): CountryCurrencyRateResponseDto
+
+    @GET("economy/{countryName}")
+    suspend fun getCountryEconomy(@Path("countryName") countryName: String): EconomyResponseDto
 
     @GET("news/{countryName}")
     suspend fun getNews(

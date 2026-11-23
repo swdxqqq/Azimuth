@@ -54,17 +54,30 @@ import com.example.azimuth_mobile.presentation.catalog.CatalogError
 import com.example.azimuth_mobile.presentation.catalog.CatalogUiState
 import com.example.azimuth_mobile.presentation.theme.nunitoFamily
 import com.example.azimuth_mobile.presentation.theme.nunitoSansFamily
-import kotlin.math.roundToInt
+import java.util.Locale
 
 private data class ComparisonMetric(
     val label: String,
-    val value: (CountryMetrics) -> Double?
+    val value: (CountryMetrics) -> Double?,
+    val formatValue: (Double) -> String = { formatOneDecimal(it) }
 )
 
 private val comparisonMetrics = listOf(
-    ComparisonMetric("Cost of Living") { it.costOfLiving },
-    ComparisonMetric("Safety") { it.safety },
-    ComparisonMetric("Climate") { it.climate }
+    ComparisonMetric("Cost of Living Index", CountryMetrics::costOfLiving),
+    ComparisonMetric("Rent Index", CountryMetrics::rentIndex),
+    ComparisonMetric("Purchasing Power Index", CountryMetrics::purchasingPower),
+    ComparisonMetric("Property Price to Income Ratio", CountryMetrics::propertyPriceToIncome),
+    ComparisonMetric("Quality of Life Index", CountryMetrics::qualityOfLife),
+    ComparisonMetric("Safety Index", CountryMetrics::safety),
+    ComparisonMetric("Healthcare Index", CountryMetrics::healthCare),
+    ComparisonMetric("Pollution Index", CountryMetrics::pollution),
+    ComparisonMetric("Climate Comfort Score", CountryMetrics::climate),
+    ComparisonMetric("Internet Speed (Mbps)", CountryMetrics::internetSpeed),
+    ComparisonMetric(
+        "Visa-free Destinations",
+        { it.visaScore?.toDouble() },
+        { it.toInt().toString() }
+    )
 )
 
 @Composable
@@ -241,7 +254,10 @@ private fun VisualComparisonCard(countries: List<CountryListItem>) {
                 fontWeight = FontWeight.Bold
             )
             Spacer(Modifier.height(18.dp))
-            comparisonMetrics.forEachIndexed { index, metric ->
+            val availableMetrics = comparisonMetrics.filter { metric ->
+                countries.any { item -> item.metrics?.let(metric.value) != null }
+            }
+            availableMetrics.forEachIndexed { index, metric ->
                 if (index > 0) Spacer(Modifier.height(18.dp))
                 Text(
                     text = metric.label,
@@ -251,20 +267,38 @@ private fun VisualComparisonCard(countries: List<CountryListItem>) {
                     fontWeight = FontWeight.Medium
                 )
                 Spacer(Modifier.height(8.dp))
+                val values = countries.map { item -> item.metrics?.let(metric.value) }
+                val maxValue = values.filterNotNull().maxOrNull()?.takeIf { it > 0.0 }
                 countries.forEach { item ->
+                    val value = item.metrics?.let(metric.value)
                     ComparisonBarRow(
                         item = item,
-                        value = item.metrics?.let(metric.value)
+                        value = value,
+                        maxValue = maxValue,
+                        formatValue = metric.formatValue
                     )
                     Spacer(Modifier.height(6.dp))
                 }
+            }
+            if (availableMetrics.isEmpty()) {
+                Text(
+                    text = "Comparison metrics are not available",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontFamily = nunitoSansFamily,
+                    fontSize = 14.sp
+                )
             }
         }
     }
 }
 
 @Composable
-private fun ComparisonBarRow(item: CountryListItem, value: Double?) {
+private fun ComparisonBarRow(
+    item: CountryListItem,
+    value: Double?,
+    maxValue: Double?,
+    formatValue: (Double) -> String
+) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         CountryFlag(
             item = item,
@@ -280,9 +314,14 @@ private fun ComparisonBarRow(item: CountryListItem, value: Double?) {
                 .background(MaterialTheme.colorScheme.surfaceVariant)
         ) {
             if (value != null) {
+                val fillFraction = if (maxValue == null) {
+                    0f
+                } else {
+                    (value / maxValue).toFloat().coerceIn(0f, 1f)
+                }
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth((value.coerceIn(0.0, 100.0) / 100.0).toFloat())
+                        .fillMaxWidth(fillFraction)
                         .fillMaxSize()
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.primary)
@@ -291,8 +330,8 @@ private fun ComparisonBarRow(item: CountryListItem, value: Double?) {
         }
         Spacer(Modifier.width(8.dp))
         Text(
-            text = value?.roundToInt()?.toString() ?: "—",
-            modifier = Modifier.width(24.dp),
+            text = value?.let(formatValue) ?: "—",
+            modifier = Modifier.width(52.dp),
             color = MaterialTheme.colorScheme.onSurface,
             fontFamily = nunitoSansFamily,
             fontSize = 13.sp,
@@ -634,13 +673,13 @@ private fun CountryFlag(
     modifier: Modifier,
     cornerRadius: androidx.compose.ui.unit.Dp
 ) {
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(cornerRadius))
-            .background(MaterialTheme.colorScheme.surfaceVariant),
-        contentAlignment = Alignment.Center
-    ) {
-        if (item.country.flagUrl.isNullOrBlank()) {
+    if (item.country.flagUrl.isNullOrBlank()) {
+        Box(
+            modifier = modifier
+                .clip(RoundedCornerShape(cornerRadius))
+                .background(MaterialTheme.colorScheme.surfaceVariant),
+            contentAlignment = Alignment.Center
+        ) {
             Text(
                 text = item.country.code,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -649,13 +688,15 @@ private fun CountryFlag(
                 fontWeight = FontWeight.Bold,
                 maxLines = 1
             )
-        } else {
-            AsyncImage(
-                model = item.country.flagUrl,
-                contentDescription = "${item.country.name} flag",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
         }
+    } else {
+        AsyncImage(
+            model = item.country.flagUrl,
+            contentDescription = "${item.country.name} flag",
+            modifier = modifier.clip(RoundedCornerShape(cornerRadius)),
+            contentScale = ContentScale.Crop
+        )
     }
 }
+
+private fun formatOneDecimal(value: Double): String = String.format(Locale.US, "%.1f", value)
