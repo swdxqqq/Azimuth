@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -33,7 +32,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
@@ -42,16 +40,22 @@ import androidx.compose.ui.unit.sp
 import com.example.azimuth_mobile.R
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavType
 import androidx.navigation.NavHostController
+import androidx.navigation.navArgument
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.compose.runtime.LaunchedEffect
 import com.example.azimuth_mobile.presentation.catalog.CatalogScreen
 import com.example.azimuth_mobile.presentation.catalog.CatalogViewModel
 import com.example.azimuth_mobile.presentation.catalog.CountryCard
 import com.example.azimuth_mobile.presentation.catalog.CatalogUiState
 import com.example.azimuth_mobile.presentation.catalog.PriorityBottomSheet
+import com.example.azimuth_mobile.presentation.compare.CompareScreen
+import com.example.azimuth_mobile.presentation.detail.CountryDetailScreen
+import com.example.azimuth_mobile.presentation.detail.CountryDetailViewModel
 import com.example.azimuth_mobile.presentation.theme.nunitoFamily
 import com.example.azimuth_mobile.presentation.theme.nunitoSansFamily
 
@@ -59,6 +63,8 @@ private object Routes {
     const val Catalog = "catalog"
     const val Favorites = "favorites"
     const val Compare = "compare"
+    const val CountryDetail = "country_detail"
+    const val CountryDetailPattern = "$CountryDetail/{countryId}"
 }
 
 @Composable
@@ -74,7 +80,11 @@ fun AzimuthNavigation() {
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             BottomNavigationBar(
-                selectedRoute = currentRoute,
+                selectedRoute = if (currentRoute == Routes.CountryDetailPattern) {
+                    Routes.Catalog
+                } else {
+                    currentRoute
+                },
                 onNavigate = { route -> navigateTo(navController, route) }
             )
         }
@@ -92,6 +102,9 @@ fun AzimuthNavigation() {
                     onQueryChanged = viewModel::onQueryChanged,
                     onRegionSelected = viewModel::onRegionSelected,
                     onFavoriteClicked = viewModel::toggleFavorite,
+                    onCountryClicked = { countryId ->
+                        navController.navigate("${Routes.CountryDetail}/$countryId")
+                    },
                     onRetry = viewModel::loadCountries,
                     onFilterClick = { showPriorities = true }
                 )
@@ -103,7 +116,33 @@ fun AzimuthNavigation() {
                 )
             }
             composable(Routes.Compare) {
-                CompareScreen(onAddCountry = { navigateTo(navController, Routes.Catalog) })
+                CompareScreen(
+                    state = state,
+                    onAddCountry = viewModel::addToCompare,
+                    onRemoveCountry = viewModel::removeFromCompare,
+                    onRetry = viewModel::loadCountries
+                )
+            }
+            composable(
+                route = Routes.CountryDetailPattern,
+                arguments = listOf(navArgument("countryId") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val countryId = requireNotNull(backStackEntry.arguments?.getInt("countryId"))
+                val detailViewModel: CountryDetailViewModel = hiltViewModel()
+                val detailState by detailViewModel.uiState.collectAsState()
+                LaunchedEffect(countryId) {
+                    detailViewModel.loadCountry(countryId)
+                }
+                CountryDetailScreen(
+                    state = detailState,
+                    isFavorite = countryId in state.favoriteIds,
+                    onFavoriteClick = { viewModel.toggleFavorite(countryId) },
+                    onCompareClick = {
+                        viewModel.addToCompare(countryId)
+                        navigateTo(navController, Routes.Compare)
+                    },
+                    onRetry = { detailViewModel.loadCountry(countryId) }
+                )
             }
         }
     }
@@ -350,83 +389,6 @@ private fun EmptyFavoritesState(modifier: Modifier = Modifier) {
         Spacer(Modifier.height(8.dp))
         Text(
             text = "Start adding countries to your favorites to see them here",
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            fontFamily = nunitoSansFamily,
-            fontSize = 14.sp,
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center
-        )
-    }
-}
-
-@Composable
-private fun CompareScreen(onAddCountry: () -> Unit) {
-    Box(Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-        ) {
-            Text(
-                text = "Compare",
-                modifier = Modifier.padding(top = 12.dp),
-                color = MaterialTheme.colorScheme.onBackground,
-                fontFamily = nunitoFamily,
-                fontSize = 26.sp,
-                fontWeight = FontWeight.ExtraBold
-            )
-        }
-        EmptyCompareState(Modifier.align(Alignment.Center))
-        Surface(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(end = 20.dp, bottom = 20.dp)
-                .size(56.dp)
-                .clickable(role = Role.Button, onClick = onAddCountry),
-            shape = CircleShape,
-            color = MaterialTheme.colorScheme.primary,
-            shadowElevation = 4.dp
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_add),
-                    contentDescription = "Add country to compare",
-                    tint = Color.White,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun EmptyCompareState(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(280.dp)
-            .padding(horizontal = 24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        EmptyMessageIcon {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_compare),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(38.dp)
-            )
-        }
-        Spacer(Modifier.height(20.dp))
-        Text(
-            text = "No countries selected",
-            color = MaterialTheme.colorScheme.onBackground,
-            fontFamily = nunitoFamily,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold
-        )
-        Spacer(Modifier.height(8.dp))
-        Text(
-            text = "Add countries to compare them side by side",
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontFamily = nunitoSansFamily,
             fontSize = 14.sp,

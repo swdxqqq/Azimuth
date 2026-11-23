@@ -23,6 +23,7 @@ data class CatalogUiState(
     val query: String = "",
     val selectedRegion: String = "All",
     val favoriteIds: List<Int> = emptyList(),
+    val compareIds: List<Int> = emptyList(),
     val isLoading: Boolean = true,
     val error: CatalogError? = null
 ) {
@@ -89,6 +90,19 @@ class CatalogViewModel @Inject constructor(
                 state.favoriteIds + countryId
             }
             state.copy(favoriteIds = favorites)
+        }
+    }
+
+    fun addToCompare(countryId: Int) {
+        _uiState.update { state ->
+            if (countryId in state.compareIds) state
+            else state.copy(compareIds = state.compareIds + countryId)
+        }
+    }
+
+    fun removeFromCompare(countryId: Int) {
+        _uiState.update { state ->
+            state.copy(compareIds = state.compareIds - countryId)
         }
     }
 }

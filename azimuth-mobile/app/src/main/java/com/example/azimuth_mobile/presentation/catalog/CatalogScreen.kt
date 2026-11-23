@@ -55,6 +55,7 @@ fun CatalogScreen(
     onQueryChanged: (String) -> Unit,
     onRegionSelected: (String) -> Unit,
     onFavoriteClicked: (Int) -> Unit,
+    onCountryClicked: (Int) -> Unit,
     onRetry: () -> Unit,
     onFilterClick: () -> Unit
 ) {
@@ -70,6 +71,7 @@ fun CatalogScreen(
             onQueryChanged = onQueryChanged,
             onRegionSelected = onRegionSelected,
             onFavoriteClicked = onFavoriteClicked,
+            onCountryClicked = onCountryClicked,
             onFilterClick = onFilterClick
         )
     }
@@ -81,6 +83,7 @@ private fun CatalogContent(
     onQueryChanged: (String) -> Unit,
     onRegionSelected: (String) -> Unit,
     onFavoriteClicked: (Int) -> Unit,
+    onCountryClicked: (Int) -> Unit,
     onFilterClick: () -> Unit
 ) {
     Box(Modifier.fillMaxSize()) {
@@ -114,7 +117,8 @@ private fun CatalogContent(
                         CountryCard(
                             item = item,
                             isFavorite = item.country.id in state.favoriteIds,
-                            onFavoriteClick = { onFavoriteClicked(item.country.id) }
+                            onFavoriteClick = { onFavoriteClicked(item.country.id) },
+                            onCountryClick = { onCountryClicked(item.country.id) }
                         )
                     }
                 }
@@ -263,6 +267,7 @@ fun CountryCard(
     item: CountryListItem,
     isFavorite: Boolean,
     onFavoriteClick: () -> Unit,
+    onCountryClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     val country = item.country
@@ -272,6 +277,10 @@ fun CountryCard(
             .fillMaxWidth()
             .clip(RoundedCornerShape(20.dp))
             .background(MaterialTheme.colorScheme.surface)
+            .then(
+                onCountryClick?.let { click -> Modifier.clickable(role = Role.Button, onClick = click) }
+                    ?: Modifier
+            )
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
