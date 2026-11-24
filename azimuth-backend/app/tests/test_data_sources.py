@@ -10,6 +10,8 @@ from app.data_collection.collect_climate import (
     normalize_country_name,
     score_monthly_temperature,
 )
+from app.constants import COUNTRY_CURRENCY
+from app.services.country_metrics import calculate_quality_of_life
 from app.services.country_reference import get_country_reference, load_reference_data
 
 
@@ -70,6 +72,32 @@ class TestCountryReferenceData(unittest.TestCase):
         self.assertEqual(reference["population"], 9890400)
         self.assertEqual(reference["languages"], ["Arabic", "English"])
         self.assertEqual(reference["timezone"], "Asia/Dubai")
+
+
+class TestCountryCompositeMetrics(unittest.TestCase):
+    def test_adapted_quality_of_life_formula_uses_all_source_inputs(self):
+        row = {
+            "Local Purchasing Power Index": 100.0,
+            "Price To Income Ratio": 10.0,
+            "Cost of Living Index": 50.0,
+            "Safety Index": 60.0,
+            "Health Care Index": 70.0,
+            "Time Index(in minutes)": 30.0,
+            "Pollution Index": 20.0,
+            "climate_comfort_score": 80.0,
+        }
+
+        self.assertEqual(calculate_quality_of_life(row), 181.33)
+
+    def test_quality_of_life_is_missing_when_an_input_is_unavailable(self):
+        self.assertIsNone(calculate_quality_of_life({}))
+
+    def test_seeded_countries_have_currency_mappings(self):
+        data_file = Path(__file__).resolve().parents[2] / "data" / "merged_all_features_2025.csv"
+        countries = pd.read_csv(data_file)["Country"].dropna().astype(str)
+        missing = sorted(set(countries) - set(COUNTRY_CURRENCY))
+
+        self.assertEqual(missing, [])
 
 
 if __name__ == "__main__":

@@ -263,7 +263,10 @@ paths:
       tags:
         - Economy
       summary: Получить экономические данные страны
-      description: Возвращает экономические показатели страны (ВВП, инфляция, безработица) из кэша БД или IMF API.
+      description: >-
+        Возвращает последние фактические показатели и годовую историю ВВП на душу населения,
+        инфляции и безработицы из IMF WEO. История ограничена 2020–2024 годами, чтобы
+        не смешивать наблюдения с прогнозными значениями.
       parameters:
         - name: country_name
           in: path
@@ -281,10 +284,31 @@ paths:
                 $ref: '#/components/schemas/EconomyResponse'
               example:
                 country_id: 1
-                year: 2025
-                gdp_per_capita: 48690
-                inflation: 2.1
+                year: 2024
+                gdp_per_capita: 56103
+                inflation: 2.2
                 unemployment: 3.4
+                history:
+                  - year: 2020
+                    gdp_per_capita: 46252
+                    inflation: 0.5
+                    unemployment: 4.3
+                  - year: 2021
+                    gdp_per_capita: 51386
+                    inflation: 3.1
+                    unemployment: 3.6
+                  - year: 2022
+                    gdp_per_capita: 48717
+                    inflation: 6.9
+                    unemployment: 3.1
+                  - year: 2023
+                    gdp_per_capita: 53352
+                    inflation: 5.9
+                    unemployment: 3.0
+                  - year: 2024
+                    gdp_per_capita: 56103
+                    inflation: 2.2
+                    unemployment: 3.4
         '404':
           description: Данные не найдены
           content:
@@ -765,6 +789,10 @@ components:
           type: number
           format: double
           description: Исходный индекс стоимости жизни (меньше = дешевле)
+        cost_of_living_plus_rent:
+          type: number
+          format: double
+          description: Индекс стоимости жизни вместе с арендой (меньше = дешевле)
         rent_index:
           type: number
           format: double
@@ -784,7 +812,11 @@ components:
         quality_of_life:
           type: number
           format: double
-          description: Исходный индекс качества жизни
+          description: >-
+            Производный Numbeo-inspired индекс качества жизни. Рассчитывается из
+            покупательной способности, цены жилья к доходу, стоимости жизни,
+            безопасности, здравоохранения, времени поездки, загрязнения и Climate Score.
+            Значение используется для сравнения стран, а не как абсолютная оценка.
         climate:
           type: number
           format: double
@@ -1233,6 +1265,7 @@ components:
 
     EconomyResponse:
       type: object
+      description: Последние фактические показатели и история за 2020–2024 годы.
       properties:
         country_id:
           type: integer
@@ -1252,8 +1285,38 @@ components:
           type: number
           format: double
           description: Безработица (%)
+        history:
+          type: array
+          description: Годовые фактические значения за 2020–2024 годы, без прогнозов.
+          items:
+            $ref: '#/components/schemas/EconomyHistoryPoint'
       required:
         - country_id
+        - year
+        - history
+
+    EconomyHistoryPoint:
+      type: object
+      properties:
+        year:
+          type: integer
+          description: Год наблюдения
+        gdp_per_capita:
+          type: number
+          format: double
+          nullable: true
+          description: ВВП на душу населения (текущие USD)
+        inflation:
+          type: number
+          format: double
+          nullable: true
+          description: Инфляция (%)
+        unemployment:
+          type: number
+          format: double
+          nullable: true
+          description: Безработица (%)
+      required:
         - year
 
     NewsListResponse:

@@ -93,6 +93,11 @@ COUNTRY_CURRENCY: Dict[str, str] = {
     "Poland": "PLN", "Hungary": "HUF", "Croatia": "EUR",
     "Slovakia": "EUR", "Lithuania": "EUR", "Latvia": "EUR",
     "Estonia": "EUR", "Malta": "EUR", "Cyprus": "EUR",
+    "Albania": "ALL", "Armenia": "AMD", "Serbia": "RSD",
+    "Bulgaria": "EUR", "Romania": "RON", "Bosnia And Herzegovina": "BAM",
+    "Georgia": "GEL", "North Macedonia": "MKD", "Azerbaijan": "AZN",
+    "Kazakhstan": "KZT", "Belarus": "BYN", "Moldova": "MDL",
+    "Montenegro": "EUR",
     "Chile": "CLP", "Argentina": "ARS", "Brazil": "BRL",
     "Mexico": "MXN", "Colombia": "COP", "Peru": "PEN",
     "Venezuela": "VES", "Uruguay": "UYU", "Costa Rica": "CRC",
@@ -108,7 +113,8 @@ COUNTRY_CURRENCY: Dict[str, str] = {
     "Oman": "OMR", "Jordan": "JOD", "Lebanon": "LBP",
     "Iran": "IRR", "Iraq": "IQD", "Yemen": "YER",
     "Syria": "SYP", "Bolivia": "BOB", "Ecuador": "USD",
-    "Paraguay": "PYG", "Trinidad and Tobago": "TTD", "Jamaica": "JMD",
+    "Paraguay": "PYG", "Trinidad and Tobago": "TTD",
+    "Trinidad And Tobago": "TTD", "Jamaica": "JMD",
     "Dominican Republic": "DOP", "Guatemala": "GTQ", "Honduras": "HNL",
     "Nicaragua": "NIO", "El Salvador": "USD"
 }
@@ -152,6 +158,7 @@ REGIONS: Dict[str, Set[str]] = {
 METRICS_MAPPING: Dict[str, str] = {
     'cost_of_living': 'Cost of Living Index',
     'rent': 'Rent Index',
+    'cost_of_living_plus_rent': 'Cost of Living Plus Rent Index',
     'groceries': 'Groceries Index',
     'restaurant': 'Restaurant Price Index',
     'purchasing_power': 'Local Purchasing Power Index',
