@@ -108,6 +108,7 @@ paths:
                       safety: 58.2
                       healthcare: 76.8
                       quality_of_life: 85.3
+                      hdi: 0.959
                 total: 88
                 page: 1
                 limit: 20
@@ -157,6 +158,7 @@ paths:
                   healthcare: 76.8
                   pollution: 35.6
                   quality_of_life: 85.3
+                  hdi: 0.959
                   climate: 72.1
                   purchasing_power: 98.5
                   property_price_to_income: 12.4
@@ -264,9 +266,8 @@ paths:
         - Economy
       summary: Получить экономические данные страны
       description: >-
-        Возвращает последние фактические показатели и годовую историю ВВП на душу населения,
-        инфляции и безработицы из IMF WEO. История ограничена 2020–2024 годами, чтобы
-        не смешивать наблюдения с прогнозными значениями.
+        Возвращает последние показатели IMF WEO (оценка за 2025 год, если доступна,
+        иначе последний фактический год) и годовую фактическую историю за 2020–2024 годы.
       parameters:
         - name: country_name
           in: path
@@ -285,6 +286,7 @@ paths:
               example:
                 country_id: 1
                 year: 2024
+                is_estimate: false
                 gdp_per_capita: 56103
                 inflation: 2.2
                 unemployment: 3.4
@@ -817,6 +819,15 @@ components:
             покупательной способности, цены жилья к доходу, стоимости жизни,
             безопасности, здравоохранения, времени поездки, загрязнения и Climate Score.
             Значение используется для сравнения стран, а не как абсолютная оценка.
+        hdi:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 1
+          description: >-
+            Индекс человеческого развития (HDI) из набора данных ООН. Шкала 0–1,
+            большее значение означает более высокий уровень человеческого развития.
+            Год наблюдения в исходном CSV не указан.
         climate:
           type: number
           format: double
@@ -1265,14 +1276,17 @@ components:
 
     EconomyResponse:
       type: object
-      description: Последние фактические показатели и история за 2020–2024 годы.
+      description: Последние показатели (оценка за 2025 год или последний фактический год) и история за 2020–2024 годы.
       properties:
         country_id:
           type: integer
           description: ID страны
         year:
           type: integer
-          description: Год данных
+          description: Год последних показателей
+        is_estimate:
+          type: boolean
+          description: True, если последние показатели являются оценкой за 2025 год.
         gdp_per_capita:
           type: number
           format: double
@@ -1293,6 +1307,7 @@ components:
       required:
         - country_id
         - year
+        - is_estimate
         - history
 
     EconomyHistoryPoint:

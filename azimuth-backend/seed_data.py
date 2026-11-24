@@ -6,7 +6,12 @@ from app.database import engine, SessionLocal, Base
 from app.models.country import Country, Metric
 from app.models.user import User, UserPreference, FavoriteCountry
 from app.models.metrics import EconomicIndicator, NewsArticle
-from app.services.country_reference import get_country_reference, load_reference_data
+from app.services.country_reference import (
+    get_country_reference,
+    get_hdi_value,
+    load_hdi_data,
+    load_reference_data,
+)
 from app.services.country_metrics import QUALITY_OF_LIFE_SOURCE, calculate_quality_of_life
 
 FLAG_ASSETS_DIR = Path(__file__).resolve().parent / "assets" / "flags"
@@ -20,6 +25,7 @@ FLAG_ASSET_OVERRIDES = {
 }
 CLIMATE_SCORE_SOURCE = "Open-Meteo Archive 2020-2024 temperature comfort"
 FINANCIAL_METRICS_SOURCE = "numbeo"
+HDI_SOURCE = "UNDP Human Development Index"
 
 
 def get_flag_url(code: str, country_name: str) -> str:
@@ -67,6 +73,7 @@ def load_countries_data():
     visa_df = pd.read_csv('data/visa_score.csv')
     visa_dict = dict(zip(visa_df['Country'], visa_df['Value']))
     populations, languages = load_reference_data(Path(__file__).resolve().parent / "data")
+    hdi_values = load_hdi_data(Path(__file__).resolve().parent / "data" / "hdi.csv")
     climate_scores = {
         country_name: float(score)
         for country_name, score in zip(df["Country"], df["climate_comfort_score"])
@@ -126,42 +133,47 @@ def load_countries_data():
                         climate_metric.source = CLIMATE_SCORE_SOURCE
                         updated_climate += 1
 
+                composite_metrics = {
+                    "hdi": get_hdi_value(country.name, hdi_values),
+                }
                 source_row = country_rows.get(country.name)
                 if source_row is not None:
-                    composite_metrics = {
+                    composite_metrics.update({
                         "cost_of_living_plus_rent": source_row.get(
                             "Cost of Living Plus Rent Index"
                         ),
                         "quality_of_life": calculate_quality_of_life(source_row),
-                    }
-                    for metric_type, value in composite_metrics.items():
-                        if value is None or pd.isna(value):
-                            continue
-                        value = float(value)
-                        source = (
-                            QUALITY_OF_LIFE_SOURCE
-                            if metric_type == "quality_of_life"
-                            else FINANCIAL_METRICS_SOURCE
+                    })
+                for metric_type, value in composite_metrics.items():
+                    if value is None or pd.isna(value):
+                        continue
+                    value = float(value)
+                    source = (
+                        QUALITY_OF_LIFE_SOURCE
+                        if metric_type == "quality_of_life"
+                        else HDI_SOURCE
+                        if metric_type == "hdi"
+                        else FINANCIAL_METRICS_SOURCE
+                    )
+                    metric = db.query(Metric).filter(
+                        Metric.country_id == country.id,
+                        Metric.year == 2025,
+                        Metric.metric_type == metric_type,
+                    ).first()
+                    if metric is None:
+                        metric = Metric(
+                            country_id=country.id,
+                            year=2025,
+                            metric_type=metric_type,
+                            value=value,
+                            source=source,
                         )
-                        metric = db.query(Metric).filter(
-                            Metric.country_id == country.id,
-                            Metric.year == 2025,
-                            Metric.metric_type == metric_type,
-                        ).first()
-                        if metric is None:
-                            metric = Metric(
-                                country_id=country.id,
-                                year=2025,
-                                metric_type=metric_type,
-                                value=value,
-                                source=source,
-                            )
-                            db.add(metric)
-                            updated_composite_metrics += 1
-                        elif metric.value != value or metric.source != source:
-                            metric.value = value
-                            metric.source = source
-                            updated_composite_metrics += 1
+                        db.add(metric)
+                        updated_composite_metrics += 1
+                    elif metric.value != value or metric.source != source:
+                        metric.value = value
+                        metric.source = source
+                        updated_composite_metrics += 1
 
             if (
                 updated_flags
@@ -301,6 +313,7 @@ def load_countries_data():
                 'property_price_to_income': 'Price To Income Ratio',
                 'traffic': 'Traffic Index',
                 'quality_of_life': None,
+                'hdi': None,
                 'climate': 'climate_comfort_score',
                 'internet_speed': 'internet_speed_mbps',
                 'visa_score': 'visa_score'
@@ -309,6 +322,8 @@ def load_countries_data():
             for metric_type, csv_column in metrics_mapping.items():
                 if metric_type == "quality_of_life":
                     value = calculate_quality_of_life(row)
+                elif metric_type == "hdi":
+                    value = get_hdi_value(country_name, hdi_values)
                 elif csv_column and csv_column in row:
                     value = row[csv_column]
                     if metric_type == "climate":
@@ -322,6 +337,8 @@ def load_countries_data():
                         if metric_type == "climate"
                         else QUALITY_OF_LIFE_SOURCE
                         if metric_type == "quality_of_life"
+                        else HDI_SOURCE
+                        if metric_type == "hdi"
                         else "other"
                         if metric_type in ("internet_speed", "visa_score")
                         else FINANCIAL_METRICS_SOURCE

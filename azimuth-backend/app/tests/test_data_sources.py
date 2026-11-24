@@ -12,7 +12,12 @@ from app.data_collection.collect_climate import (
 )
 from app.constants import COUNTRY_CURRENCY
 from app.services.country_metrics import calculate_quality_of_life
-from app.services.country_reference import get_country_reference, load_reference_data
+from app.services.country_reference import (
+    get_country_reference,
+    get_hdi_value,
+    load_hdi_data,
+    load_reference_data,
+)
 
 
 class TestClimateComfortScore(unittest.TestCase):
@@ -72,6 +77,48 @@ class TestCountryReferenceData(unittest.TestCase):
         self.assertEqual(reference["population"], 9890400)
         self.assertEqual(reference["languages"], ["Arabic", "English"])
         self.assertEqual(reference["timezone"], "Asia/Dubai")
+
+
+class TestHdiData(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.data_dir = Path(__file__).resolve().parents[2] / "data"
+        cls.hdi_values = load_hdi_data(cls.data_dir / "hdi.csv")
+
+    def test_country_aliases_resolve_to_dataset_rows(self):
+        self.assertEqual(
+            get_hdi_value("Czech Republic", self.hdi_values),
+            get_hdi_value("Czechia", self.hdi_values),
+        )
+        self.assertEqual(
+            get_hdi_value("Hong Kong (China)", self.hdi_values),
+            get_hdi_value("Hong Kong", self.hdi_values),
+        )
+        self.assertEqual(
+            get_hdi_value("Bosnia And Herzegovina", self.hdi_values),
+            get_hdi_value("Bosnia and Herzegovina", self.hdi_values),
+        )
+
+    def test_catalog_coverage_reports_only_countries_without_hdi(self):
+        catalog = pd.read_csv(self.data_dir / "merged_all_features_2025.csv")
+        missing = sorted(
+            country
+            for country in catalog["Country"].dropna().astype(str)
+            if get_hdi_value(country, self.hdi_values) is None
+        )
+
+        self.assertEqual(missing, ["Taiwan"])
+
+    def test_rejects_duplicate_names_after_alias_normalization(self):
+        with tempfile.TemporaryDirectory() as directory:
+            hdi_file = Path(directory) / "hdi.csv"
+            pd.DataFrame({
+                "Country": ["Czechia", "Czech Republic"],
+                "HDI": [0.915, 0.915],
+            }).to_csv(hdi_file, index=False)
+
+            with self.assertRaisesRegex(ValueError, "Duplicate HDI country"):
+                load_hdi_data(hdi_file)
 
 
 class TestCountryCompositeMetrics(unittest.TestCase):

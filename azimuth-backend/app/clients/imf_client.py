@@ -12,6 +12,7 @@ warnings.filterwarnings('ignore')
 class IMFClient:
     HISTORY_START_YEAR = 2020
     HISTORY_END_YEAR = 2024
+    LATEST_YEAR = 2025
     INDICATOR_FIELDS = {
         "NGDPDPC": "gdp_per_capita",
         "PCPIPCH": "inflation",
@@ -21,14 +22,16 @@ class IMFClient:
     def __init__(self, cache_ttl: int = 86400):
         self.cache_ttl = cache_ttl
         self._cache: Dict[str, tuple] = {}
-        self.year = self.HISTORY_END_YEAR
+        self.year = self.LATEST_YEAR
 
     def get_country_economy(self, country: str) -> Optional[Dict]:
         iso3 = COUNTRY_ISO3.get(country)
         if not iso3:
             return None
 
-        cache_key = f"{iso3}_{self.HISTORY_START_YEAR}_{self.HISTORY_END_YEAR}"
+        cache_key = (
+            f"{iso3}_{self.HISTORY_START_YEAR}_{self.HISTORY_END_YEAR}_latest_{self.LATEST_YEAR}"
+        )
         if cache_key in self._cache:
             cached_time, cached_data = self._cache[cache_key]
             if time.time() - cached_time < self.cache_ttl:
@@ -51,7 +54,7 @@ class IMFClient:
                     "inflation": None,
                     "unemployment": None,
                 }
-                for year in range(self.HISTORY_START_YEAR, self.HISTORY_END_YEAR + 1)
+                for year in range(self.HISTORY_START_YEAR, self.LATEST_YEAR + 1)
             }
 
             for _, row in df.iterrows():
@@ -74,17 +77,24 @@ class IMFClient:
 
             history = [
                 point
-                for point in values_by_year.values()
+                for year, point in values_by_year.items()
+                if year <= self.HISTORY_END_YEAR
                 if any(point[field] is not None for field in self.INDICATOR_FIELDS.values())
             ]
-            if not history:
+            latest_estimate = values_by_year[self.LATEST_YEAR]
+            has_latest_estimate = any(
+                latest_estimate[field] is not None
+                for field in self.INDICATOR_FIELDS.values()
+            )
+            if not history and not has_latest_estimate:
                 return None
 
-            latest = history[-1]
+            latest = latest_estimate if has_latest_estimate else history[-1]
             result = {
                 "country": country,
                 "iso3": iso3,
                 **latest,
+                "is_estimate": has_latest_estimate,
                 "history": history,
             }
 

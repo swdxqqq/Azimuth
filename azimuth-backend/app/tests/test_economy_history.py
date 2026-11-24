@@ -11,7 +11,7 @@ from app.services.economy_service import EconomyService
 
 class TestImfEconomyHistory(unittest.TestCase):
     @patch("app.clients.imf_client.imf_get")
-    def test_returns_five_historical_years_and_ignores_forecasts(self, imf_get):
+    def test_returns_2025_estimate_and_five_actual_history_years(self, imf_get):
         rows = []
         for year in range(2020, 2026):
             for indicator, value in (
@@ -29,10 +29,30 @@ class TestImfEconomyHistory(unittest.TestCase):
         response = IMFClient().get_country_economy("Switzerland")
 
         self.assertIsNotNone(response)
-        self.assertEqual(response["year"], 2024)
+        self.assertEqual(response["year"], 2025)
+        self.assertTrue(response["is_estimate"])
+        self.assertEqual(response["gdp_per_capita"], 12025.0)
         self.assertEqual([point["year"] for point in response["history"]], list(range(2020, 2025)))
         self.assertEqual(response["history"][-1]["gdp_per_capita"], 12024.0)
         self.assertNotIn(2025, [point["year"] for point in response["history"]])
+
+    @patch("app.clients.imf_client.imf_get")
+    def test_falls_back_to_latest_actual_when_2025_is_unavailable(self, imf_get):
+        rows = [
+            {
+                "TIME_PERIOD": str(year),
+                "INDICATOR": "NGDPDPC",
+                "OBS_VALUE": 10000 + year,
+            }
+            for year in range(2020, 2025)
+        ]
+        imf_get.return_value = pd.DataFrame(rows)
+
+        response = IMFClient().get_country_economy("Switzerland")
+
+        self.assertIsNotNone(response)
+        self.assertEqual(response["year"], 2024)
+        self.assertFalse(response["is_estimate"])
 
 
 class TestEconomyHistoryCache(unittest.TestCase):
@@ -65,7 +85,7 @@ class TestEconomyHistoryCache(unittest.TestCase):
         def commit(self):
             self.commits += 1
 
-    def test_saves_all_years_without_keeping_stale_forecast_rows(self):
+    def test_saves_history_and_latest_estimate_without_stale_rows(self):
         database = self.Database([
             SimpleNamespace(year=2025, indicator_type="inflation", value=99.0)
         ])
@@ -80,11 +100,21 @@ class TestEconomyHistoryCache(unittest.TestCase):
             for year in range(2020, 2025)
         ]
 
-        service._save_to_cache(7, {"history": history})
+        service._save_to_cache(7, {
+            "year": 2025,
+            "gdp_per_capita": 2025.0,
+            "inflation": 2.5,
+            "unemployment": 3.5,
+            "history": history,
+        })
 
         self.assertTrue(database.query_result.deleted)
-        self.assertEqual(len(database.added), 15)
-        self.assertEqual({row.year for row in database.added}, set(range(2020, 2025)))
+        self.assertEqual(len(database.added), 18)
+        self.assertEqual({row.year for row in database.added}, set(range(2020, 2026)))
+        self.assertEqual(
+            {row.source for row in database.added},
+            {EconomyService.CACHE_SOURCE},
+        )
         self.assertEqual(database.commits, 1)
 
     def test_forecast_only_response_does_not_delete_cached_history(self):
@@ -104,7 +134,7 @@ class TestEconomyHistoryCache(unittest.TestCase):
         self.assertEqual(database.added, [])
         self.assertEqual(database.commits, 0)
 
-    def test_cache_groups_indicators_by_year_and_requires_history(self):
+    def test_cache_returns_2025_estimate_and_actual_history_separately(self):
         updated_at = datetime.now(timezone.utc)
         rows = [
             SimpleNamespace(
@@ -112,6 +142,7 @@ class TestEconomyHistoryCache(unittest.TestCase):
                 year=year,
                 indicator_type=indicator,
                 value=value,
+                source=EconomyService.CACHE_SOURCE,
                 updated_at=updated_at,
             )
             for year in (2020, 2024, 2025)
@@ -125,9 +156,11 @@ class TestEconomyHistoryCache(unittest.TestCase):
 
         response = service._get_from_cache(7)
 
-        self.assertEqual(response["year"], 2024)
+        self.assertEqual(response["year"], 2025)
+        self.assertTrue(response["is_estimate"])
+        self.assertEqual(response["gdp_per_capita"], 2025 * 100.0)
         self.assertEqual([point["year"] for point in response["history"]], [2020, 2024])
-        self.assertEqual(response["gdp_per_capita"], 2024 * 100.0)
+        self.assertEqual(response["history"][-1]["gdp_per_capita"], 2024 * 100.0)
 
         legacy_service = EconomyService(self.Database([
             SimpleNamespace(
@@ -135,6 +168,7 @@ class TestEconomyHistoryCache(unittest.TestCase):
                 year=2025,
                 indicator_type="gdp_per_capita",
                 value=100.0,
+                source="IMF WEO",
                 updated_at=updated_at,
             )
         ]))
